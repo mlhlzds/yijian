@@ -72,8 +72,7 @@ public class DailyController  extends BaseController {
         ReturnMsg ret = dailyService.queryDaily(map);
         int count=ret.getCount();
         if(((Integer.parseInt(param.get("i").toString())) * limit)==count){
-            ret.setCode(100);
-            ret.setMsg("查询用户成功");
+            ret.setInfo("last");
         }
         return ret;
     }

@@ -116,10 +116,6 @@
                     <main class="col">
                         <div class="daily">
                         </div>
-                        <nav class="pagination" role="navigation">
-                            <span class="page-number">第 1 页 ⁄ 共 9 页</span>
-                            <a class="older-posts" href="#"><i class="fa fa-angle-right"></i></a>
-                        </nav>
                     </main>
                 </div>
             </div>
@@ -143,7 +139,6 @@
             <button type="button" class="btn btn-default" onclick="updatePassword()" id="updateButton" data-toggle="popover">提交</button>
         </article>
     </div>
-    <!--<div role="tabpanel" class="tab-pane" id="logout">logout</div>-->
 </div>
 
 <a href="#" id="back-to-top"><i class="fa fa-angle-up"></i></a>
@@ -161,46 +156,6 @@
         var sysdate = new Date().Format("yyyy-MM-dd");
         $("#date").val(sysdate);
     });
-    /*$(document).ready(function () { //本人习惯这样写了
-        $(window).scroll(function () {
-            //$(window).scrollTop()这个方法是当前滚动条滚动的距离
-            //$(window).height()获取当前窗体的高度
-            //$(document).height()获取当前文档的高度
-            var bot = 50; //bot是底部距离的高度
-            if ((bot + $(window).scrollTop()) >= ($(".daily").height() - $(window).height())) {
-                //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
-                //我们需要去异步加载数据了
-                $.getJSON("queryDaily", { page: "2" }, function (obj) {
-                    var code = obj.code;
-                    var msg = obj.msg;
-                    if (code == 100) {
-                        $.each(obj.data, function (i, item) {
-                            html += ' <article id="110" class="post"><div class="post-head"><h1 class="post-title">';
-                            if (item.title == '' || item.title == null) {
-                                html += '无标题';
-                            } else {
-                                html += item.title;
-                            }
-                            var str = item.daily.replaceAll("\n", "<br />");
-                            str = str.replaceAll("\r", "<br />");
-
-                            html += '</h1><div class="post-meta"><span class="author">作者：<span style="color: darkorange">' + item.userName + '</span></span> •';
-                            html += '<time class="post-date">' + item.date + '</time></div></div><div class="post-content"><p>' + str + '</p></div>';
-                            if (item.dif == '1') {
-                                html += '<div class="post-permalink"><a href="#addDaily" aria-controls="addDaily" role="tab" data-toggle="tab" class="btn btn-default" onclick="updateDaily(' + item.did + ')">修改日报</a>'
-                            }
-                            html += '<footer class="post-footer clearfix"><div class="pull-left tag-list"><i class="fa fa-folder-open-o"></i>\n' +
-                                '</div><div class="pull-right share"></div></footer></article>';
-                        });
-                        $('.daily').append(html);
-                    }
-                });
-            }
-        });
-    });*/
-    /*$(document).scroll(function(){
-        $("#selectDaily").text($(".daily").scrollTop());
-    })*/
 </script>
 <script>
     //执行一个laydate实例
@@ -282,11 +237,9 @@
             var scrollHeight = $(document).height();                   //当前页面的总高度
             var windowHeight = $(this).height();                   //当前可视的页面高度
             if(scrollTop + windowHeight >= scrollHeight){        //距离顶部+当前高度 >=文档总高度 即代表滑动到底部
-                alert("下拉加载，要在这调用啥方法？");
                 i=i+1;
                 daily(i);
             }else if(scrollTop<=0){         //滚动条距离顶部的高度小于等于0
-                alert("上拉刷新，要在这调用啥方法？");
                 daily(1);
             }
         })
@@ -326,6 +279,9 @@
                         html += '<footer class="post-footer clearfix"><div class="pull-left tag-list"><i class="fa fa-folder-open-o"></i>\n' +
                             '</div><div class="pull-right share"></div></footer></article>';
                     });
+                    if(obj.info=="last"){
+                        html+='<p class="text-center">无更多记录</p>';
+                    }
                     $('.daily').append(html);
                 } else {
                     new $.flavr(msg);
