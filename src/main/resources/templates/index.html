@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>	
+<head>
+<title>Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
+	<script src="../static/jquery.min.js"></script>
+	<script type="text/javascript" src="../static/layui/layui.js"></script>
+	<meta name="keywords" content="Flat Dark Web Login Form Responsive Templates, Iphone Widget Template, Smartphone login forms,Login form, Widget Template, Responsive Templates, a Ipad 404 Templates, Flat Responsive Templates" />
+<link href="../static/css/style.css" rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" href="../static/layui/css/layui.css" media="all">
+
+</head>
+<body>
+<script>$(document).ready(function(c) {
+	$('.close').on('click', function(c){
+		$('.login-form').fadeOut('slow', function(c){
+	  		$('.login-form').remove();
+		});
+	});	  
+});
+</script>
+<style type="text/css">
+	input[type="button"]{
+		font-size: 30px;
+		color: #fff;
+		outline: none;
+		border: none;
+		background: #3ea751;
+		width: 100%;
+		padding: 18px 0;
+		border-bottom-left-radius: 15px;
+		-webkit-border-bottom-left-radius: 15px;
+		-moz-border-bottom-left-radius: 15px;
+		-o-border-bottom-left-radius: 15px;
+		border-bottom-right-radius: 15px;
+		-webkit-border-bottom-right-radius: 15px;
+		-moz-border-bottom-right-radius: 15px;
+		-o-border-bottom-right-radius: 15px;
+		cursor: pointer;
+	}
+</style>
+ <!--SIGN UP-->
+<h1 style="font-weight:bold ;font-size:50px;margin-top:40px;color:#006600;">易简管理系统</h1>
+<div class="login-form">
+	<div class="close"> </div>
+		<div class="head-info">
+			<label class="lbl-1"> </label>
+			<label class="lbl-2"> </label>
+			<label class="lbl-3"> </label>
+		</div>
+			<div class="clear"> </div>
+			<form>
+					<input type="text" class="text" value="zhou" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Username';}" id="username">
+						<div class="key">
+					<input type="password" value="111111" onfocus="this.value = '';" onblur="if (this.value == '') {this.value = 'Password';}" id="password">
+						</div>
+			</form>
+	<div class="signin">
+		<input type="button" value="Login" id="loginButton">
+	</div>
+</div>
+</body>
+<script>
+    layui.use('layer', function() {
+        layer = layui.layer;
+    });
+
+    $(document).ready(
+        function() {
+            document.onkeydown = function(e) {
+                var ev = document.all ? window.event : e;
+                if (ev.keyCode == 13) {
+                    $("#loginButton").click();
+                }
+            }
+
+            $("#loginButton") .click(function() {
+                $("#loginButton").attr("disabled","true").addClass("layui-btn-disabled");;
+                var username = $("#username").val();
+                var password = $("#password").val();
+                var user = {
+                    "username" : username,
+                    "password" : password
+                };
+                $.ajax({
+                    type : "POST",
+                    url : "/user/login",//访问路径
+                    dataType : "json",
+                    contentType : "application/json",
+                    data : JSON.stringify(user),
+                    success : function(obj) {
+                        $("#loginButton").removeAttr("disabled");
+                        var code = obj.code;
+                        var msg = obj.msg;
+                        if (code == 100) {
+                            window.location.href = "/templates/element.html";
+                        }else if(code == 105){
+                            window.location.href = "/templates/guest.html";
+						} else {
+                            layer.alert(msg);
+
+                        }
+                    },
+                    error : function(data) {
+                        $("#loginButton").removeAttr("disabled").removeClass("layui-btn-disabled");;
+                    }
+                });
+            });
+        });
+</script>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=10; IE=9; IE=8; IE=EDGE">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>添加角色</title>
+	<link rel="stylesheet" href="../../static/layui/css/layui.css">
+	<script type="text/javascript" src="../../static/layui/layui.js"></script>
+	<script src="../../static/jquery.min.js"></script>
+	<script src="../../static/layui/js/pages/request.js"></script>
+</head>
+<body>
+
+<form  class="layui-form layui-form-pane" id="addRole" action="">
+	<br/>
+	<div class="layui-form-item">
+		<label class="layui-form-label">角色名</label>
+		<div class="layui-input-inline">
+			<input type="text" id="roleName" name="roleName"
+				   lay-verify="required" placeholder="请输入角色名" autocomplete="off"
+				   class="layui-input"/>
+		</div>
+		<label class="layui-form-label">角色值</label>
+		<div class="layui-input-inline">
+			<input type="text" id="role" name="role"
+				   lay-verify="required" placeholder="请输入角色值" autocomplete="off"
+				   class="layui-input"/>
+		</div>
+		<div class="layui-input-inline">
+			<button id="addButton" class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+		</div>
+	</div>
+	<div class="layui-form-item layui-form-text">
+		<label class="layui-form-label">拥有权限</label>
+		<table  class="layui-table layui-input-block" >
+			<thead>
+			<tr>
+				<th lay-data="width:80">一级菜单</th>
+
+				<th>二级菜单</th>
+			</tr>
+			</thead>
+			<tbody id="menu"></tbody>
+		</table>
+	</div>
+
+</form>
+</body>
+<script>
+    var rid = request.QueryString("rid");
+    var data = {
+        rid: rid==null?"":rid
+    }
+    $.ajax({
+        type : "POST",
+        url : "/user/queryRoleAndMenu",//访问路径
+        dataType : "json",
+        contentType : "application/json",
+        data : JSON.stringify(data),
+        success : function(obj) {
+            var code = obj.code;
+            var msg = obj.msg;
+            if (code == 100) {
+                var html = '';
+                $("#roleName").val(obj.data.roleName);
+                $("#role").val(obj.data.role);
+                $.each(obj.data.menus, function(i, item){
+                    html += '<tr><td><div class="layui-input-block">';
+                    html += '<input name="mids" type="checkbox"'+ item.flag +'value="'+ item.mid +'" title='+ item.menuName + ' lay-filter="allChoose"/></div></td>';
+                    html += '<td><div class="layui-input-block">';
+                    $.each(item.mchild, function(e, each){
+                        html += '<input name="cids" type="checkbox"'+ each.flag +' value="'+ each.mid +'" title='+ each.menuName+ ' lay-filter="oneChoose"/> ';
+                    });
+                    html += '</div></td></tr>';
+                });
+                $("#menu").append(html);
+                layui.use('form',function() {
+                    layui.form.render();
+                });
+            } else {
+                layer.msg(obj.msg);
+            }
+        },
+        error : function(data) {
+            layer.msg(data);
+        }
+    });
+
+    layui.use('form',function() {
+        var form = layui.form;
+        form.on('submit(formDemo)',function(data) {
+            var roleName = $("#roleName").val();
+            var role = $("#role").val();
+            var mids = new Array();
+
+            $(":checkbox:checked").each(function(){
+                mids.push( $(this).val());//向数组中添加元素
+            });
+            data.field.rid = rid == null ? "": rid;
+            data.field.mids = mids;
+            if (roleName!="" && role!="") {
+                $("#addButton").attr("disabled","true").addClass("layui-btn-disabled");
+                $.ajax({
+                    type : "POST",
+                    url : rid == null ? "/user/addRole" : "/user/updateRole",//访问路径
+                    dataType : "json",
+                    contentType : "application/json",
+                    data : JSON.stringify(data.field),
+                    success : function(obj) {
+                        var code = obj.code;
+                        var msg = obj.msg;
+                        if (code == 100) {
+                            layer.msg(obj.msg);
+                        } else {
+                            layer.msg(obj.msg);
+                            $('#addButton').removeAttr("disabled").removeClass("layui-btn-disabled");
+                        }
+                    },
+                    error : function(data) {
+                        $('#addButton').removeAttr("disabled").removeClass("layui-btn-disabled");
+                    }
+                });
+            } else {
+                layer.msg("请正确填写");
+            }
+            return false;
+        });
+        //点一级菜单，二级菜单全选
+        form.on('checkbox(allChoose)', function(data){
+            var len = $(this).parent().parent().find("div[class*='layui-form-checked']").length;
+			if(len==0){
+                $(this).parent().parent().next().find("div[class*='layui-form-checked']").each(function() {
+                    $(this).attr("class","layui-unselect layui-form-checkbox");
+                    $(this).prev().attr("checked",false);
+                });
+
+			}else{
+                $(this).parent().parent().next().find("div[class='layui-unselect layui-form-checkbox']").each(function() {
+                    $(this).attr("class","layui-unselect layui-form-checkbox layui-form-checked");
+                    $(this).prev().attr("checked",true);
+                });
+			}
+
+
+
+        });
+
+        //点二级菜单，一级菜单选中
+        form.on('checkbox(oneChoose)', function(data){
+            var len = $(this).parent().parent().find("div[class*='layui-form-checked']").length;
+            var len2 = $(this).parent().parent().prev().find("div[class*='layui-form-checked']").length;
+            if(len==0&&len2==1){
+                $(this).parent().parent().prev().find("div[class='layui-unselect layui-form-checkbox layui-form-checked']").prev().attr("checked",false);
+                $(this).parent().parent().prev().find("div[class='layui-unselect layui-form-checkbox layui-form-checked']").attr("class","layui-unselect layui-form-checkbox");
+            }else if(len==1 && len2==0){
+                $(this).parent().parent().prev().find("div[class='layui-unselect layui-form-checkbox']").prev().attr("checked",true);
+                $(this).parent().parent().prev().find("div[class='layui-unselect layui-form-checkbox']").attr("class","layui-unselect layui-form-checkbox layui-form-checked");
+            }
+
+        });
+    });
+
+</script>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+    <style type="text/css">
+        .layui-tab-item {
+            height: 100%;
+        }
+    </style>
+    <script src="../static/layui/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="../static/layui/layui.js"></script>
+    <script src="../static/layui/js/date.js" type="text/javascript"></script>
+    <script src="../static/layui/js/json2.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var element;
+        layui.use('element', function() {
+            element = layui.element;
+            element.render();
+        });
+
+
+        jQuery(function() {
+            $("#updatePassword").click(function() {
+                layui.use('layer', function(){
+                    var layer = layui.layer;
+                    layer.open({
+                        type : 2,
+                        title : '修改密码',
+                        area : [ '430px', '300px' ],
+                        skin : 'layui-layer-rim', //加上边框
+                        content : [ '/templates/user/updatePassword.html', 'no' ],
+                        end: function(){
+                        }
+                    });
+                });
+            });
+        });
+
+        var html = '';
+        //获取权限
+        $(function() {
+            $.ajax({
+                type : "POST",
+                url : "/user/menu",//访问路径
+                dataType : "json",
+                success : function(obj) {
+                    var code = obj.code;
+                    var msg = obj.msg;
+                    if (code == 100) {
+                        var loginName = obj.data.loginName;
+                        $('#loginName').html(loginName);
+                        var navs= obj.data.menu;
+                        $.each(navs, function(i,item){
+                            html += '<li class="layui-nav-item layui-nav-itemed" >';
+                            html += '<a class="" href="javascript:;">'+ item.menuName +'</a>';
+                            html += '<dl class="layui-nav-child">';
+                            var childs = item.menuChild;
+                            $.each(childs ,function( i, item){
+                                html += '<dd> <a href="javascript:;" onclick="getMessage(\'' + item.menuUrl +'\', this.text )">'+ item.menuName +'</a></dd>';
+                            });
+                            html += '</dl></li>';
+                        });
+                        $('#menu').html(html);
+                        layui.use('element', function() {
+                            layui.element.render();
+                        });
+                    } else {
+                        alert(msg);
+                    }
+                },
+                error : function(obj) {
+                }
+            });
+         });
+
+        /* setInterval("showTime()", 1000);
+
+        function showTime() {
+            jQuery(function() {
+                var sysdate = new Date().Format("yyyy年MM月dd日  hh:mm:ss");
+                $("#sysdate").html("当前时间:" + sysdate);
+            });
+        } */
+
+        function logout() {
+            $.ajax({
+                type : "post",
+                url : "/user/logout",//访问路径
+                dataType : "text",
+                success : function(obj) {
+                    window.location.href = "/templates/index.html";
+                },
+                error : function(data) {
+                    window.location.href = "/templates/index.html";
+                }
+            });
+        }
+
+        function getMessage(toUrl, title) {
+            var flag = true;
+            $.each($("#tabList").children(), function(index, val) {
+                if (toUrl == $(val).attr('lay-id')) {
+                    element.tabChange('tabList', toUrl);
+                    flag = false;
+                    return false;
+                }
+            });
+            if (flag) {
+                element.tabAdd('tabList', {
+                    title: title
+                    ,content: '<iframe src="' + toUrl + '" width="100%" height="100%" frameborder="0"></iframe>' //支持传入html
+                    ,id: toUrl
+                });
+                element.tabChange('tabList', toUrl);
+            }
+        }
+
+    </script>
+
+</head>
+<body class="layui-layout-body"  >
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">
+            魔都易简
+        </div>
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;" id="loginName"></a>
+                <dl class="layui-nav-child">
+                    <dd>
+                        <a href="javascript:;" id="updatePassword">修改密码</a>
+                    </dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item">
+                <a href="javascript:;" onclick="logout()">注销登录</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" id="menu">
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body" id="body" style="bottom:0px">
+        <div class="layui-tab" lay-filter="tabList"
+             style="width: 100%; height: 100%; margin: 0px 0;"
+             lay-allowClose="true">
+            <ul class="layui-tab-title" id="tabList">
+            </ul>
+            <div class="layui-tab-content"
+                 style="width: 100%; height: 100%; padding: 0px;">
+            </div>
+        </div>
+    </div>
+
+    <!-- <div class="layui-footer" id="userfooter">
+        底部固定区域
+        <span id="sysdate"></span>
+    </div> -->
+</div>
+</body>
+</html>

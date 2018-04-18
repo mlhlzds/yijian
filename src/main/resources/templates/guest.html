@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<!-- saved from url=(0026)http://www.ghostchina.com/ -->
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+
+    <title>易简日报系统</title>
+
+    <!--<meta name="HandheldFriendly" content="True">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--<link rel="shortcut icon" href="http://www.ghostchina.com/favicon.ico">-->
+
+    <link rel="stylesheet" href="../static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../static/css/monokai_sublime.min.css">
+    <link href="../static/css/magnific-popup.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../static/css/screen.css">
+
+    <script src="../static/js/hm.js"></script>
+    <script type="text/javascript" src="../static/js/ghost-url.min.js"></script>
+
+    <script src="../static/js/share.js"></script>
+    <style id="fit-vids-style">.fluid-width-video-wrapper {
+        width: 100%;
+        position: relative;
+        padding: 0;
+    }
+
+    .fluid-width-video-wrapper iframe, .fluid-width-video-wrapper object, .fluid-width-video-wrapper embed {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }</style>
+    <link rel="stylesheet" href="../static/css/share_style0_24.css">
+</head>
+<body class="home-template">
+
+<!-- start header -->
+<header class="main-header" style="background-image: url(../static/images/fcb3879e14429d75833a461572e64.jpg)">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <!-- start logo -->
+                <a href="#addDaily" aria-controls="addDaily" role="tab" data-toggle="tab"><img
+                        src="../static/images/4f5566c1f7bc28b3f7ac1fada8abe.png" alt="易简日报系统"></a>
+
+                <img src="../static/images/fcb3879e14429d75833a461572e64.jpg" alt="易简日报系统" class="hide">
+            </div>
+        </div>
+    </div>
+</header>
+<!-- end header -->
+
+<!-- start navigation -->
+<nav class="main-navigation">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="navbar-header">
+                        <span class="nav-toggle-button collapsed" data-toggle="collapse" data-target="#main-menu">
+                        <span class="sr-only">Toggle navigation</span>
+                        <i class="fa fa-bars"></i>
+                        </span>
+                </div>
+                <div class="collapse navbar-collapse" id="main-menu">
+                    <ul class="menu">
+                        <li class="nav-current" role="presentation"><a href="#addDaily" aria-controls="addDaily"
+                                                                       role="tab" data-toggle="tab">发送日报</a></li>
+                        <li role="presentation"><a href="#selectDaily" aria-controls="selectDaily" role="tab" data-toggle="tab" onclick="selectDaily()">日报查询</a>
+                        </li>
+                        <li role="presentation"><a href="#updatePassword" aria-controls="updatePassword" role="tab"
+                                                   data-toggle="tab">修改密码</a></li>
+                        <li role="presentation"><a href="#" onclick="logout()">注销</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+<!-- end navigation -->
+
+<div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="addDaily">
+        <form>
+        <article id="110" class="post">
+            <div class="form-group">
+                <label for="date">发送时间</label>
+                <input type="text" id="date" class="form-control" placeholder="yyyy-MM-dd">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputTitle">标题</label>
+                <input type="text" class="form-control" id="exampleInputTitle" placeholder="title">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputDaily">日报</label>
+                <textarea class="form-control" rows="3" id="exampleInputDaily"></textarea>
+            </div>
+            <input type="hidden" value="" id="flag">
+            <button type="button" class="btn btn-default" onclick="addDaily()" id="addButton" data-toggle="popover">提交</button>
+            <input type="reset" class="btn btn-default" value="重置">
+        </article>
+        </form>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="selectDaily">
+        <!-- start site's main content area -->
+        <section class="content-wrap">
+            <div class="container">
+                <div class="row justify-content-md-center">
+
+                    <main class="col">
+                        <div class="daily">
+                        </div>
+                        <nav class="pagination" role="navigation">
+                            <span class="page-number">第 1 页 ⁄ 共 9 页</span>
+                            <a class="older-posts" href="#"><i class="fa fa-angle-right"></i></a>
+                        </nav>
+                    </main>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div role="tabpanel" class="tab-pane" id="updatePassword">
+        <article id="110" class="post">
+            <div class="form-group">
+                <label for="oldPassword">原始密码</label>
+                <input type="password" class="form-control" id="oldPassword">
+            </div>
+            <div class="form-group">
+                <label for="newPassword">新密码</label>
+                <input type="password" class="form-control" id="newPassword">
+            </div>
+            <div class="form-group">
+                <label for="newPassword1">确认密码</label>
+                <input type="password" class="form-control" id="newPassword1">
+            </div>
+            <button type="button" class="btn btn-default" onclick="updatePassword()" id="updateButton" data-toggle="popover">提交</button>
+        </article>
+    </div>
+    <!--<div role="tabpanel" class="tab-pane" id="logout">logout</div>-->
+</div>
+
+<a href="#" id="back-to-top"><i class="fa fa-angle-up"></i></a>
+
+<script src="../static/js/jquery.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/jquery.fitvids.min.js"></script>
+<script src="../static/js/highlight.min.js"></script>
+<script src="../static/js/jquery.magnific-popup.min.js"></script>
+<script src="../static/js/main.js"></script>
+<script src="../static/js/laydate/laydate.js"></script>
+<script src="../static/layui/js/date.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function(e) {
+        var sysdate = new Date().Format("yyyy-MM-dd");
+        $("#date").val(sysdate);
+    });
+    /*$(document).ready(function () { //本人习惯这样写了
+        $(window).scroll(function () {
+            //$(window).scrollTop()这个方法是当前滚动条滚动的距离
+            //$(window).height()获取当前窗体的高度
+            //$(document).height()获取当前文档的高度
+            var bot = 50; //bot是底部距离的高度
+            if ((bot + $(window).scrollTop()) >= ($(".daily").height() - $(window).height())) {
+                //当底部基本距离+滚动的高度〉=文档的高度-窗体的高度时；
+                //我们需要去异步加载数据了
+                $.getJSON("queryDaily", { page: "2" }, function (obj) {
+                    var code = obj.code;
+                    var msg = obj.msg;
+                    if (code == 100) {
+                        $.each(obj.data, function (i, item) {
+                            html += ' <article id="110" class="post"><div class="post-head"><h1 class="post-title">';
+                            if (item.title == '' || item.title == null) {
+                                html += '无标题';
+                            } else {
+                                html += item.title;
+                            }
+                            var str = item.daily.replaceAll("\n", "<br />");
+                            str = str.replaceAll("\r", "<br />");
+
+                            html += '</h1><div class="post-meta"><span class="author">作者：<span style="color: darkorange">' + item.userName + '</span></span> •';
+                            html += '<time class="post-date">' + item.date + '</time></div></div><div class="post-content"><p>' + str + '</p></div>';
+                            if (item.dif == '1') {
+                                html += '<div class="post-permalink"><a href="#addDaily" aria-controls="addDaily" role="tab" data-toggle="tab" class="btn btn-default" onclick="updateDaily(' + item.did + ')">修改日报</a>'
+                            }
+                            html += '<footer class="post-footer clearfix"><div class="pull-left tag-list"><i class="fa fa-folder-open-o"></i>\n' +
+                                '</div><div class="pull-right share"></div></footer></article>';
+                        });
+                        $('.daily').append(html);
+                    }
+                });
+            }
+        });
+    });*/
+    /*$(document).scroll(function(){
+        $("#selectDaily").text($(".daily").scrollTop());
+    })*/
+</script>
+<script>
+    //执行一个laydate实例
+    laydate.render({
+        elem: '#date'
+        ,min: -1
+        ,max: 0
+        ,theme: '#e67e22'
+    });
+</script>
+<script>
+    window._bd_share_config = {
+        "common": {
+            "bdSnsKey": {},
+            "bdText": "",
+            "bdMini": "2",
+            "bdMiniList": false,
+            "bdPic": "",
+            "bdStyle": "0",
+            "bdSize": "24"
+        }, "share": {}
+    };
+    with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];
+</script>
+<script>
+    $('#selectDaily a').click(function (e) {
+        $('#selectDaily').tab('show');
+        var sysdate = new Date().Format("yyyy-MM-dd");
+        $("#date").val(sysdate);
+        $("#exampleInputDaily").val();
+        $("#exampleInputDaily").val();
+
+
+    })
+
+    $('#addDaily a').click(function (e) {
+        $('#addDaily').tab('show');
+    })
+
+    $('#updatePassword a').click(function (e) {
+        $('#updatePassword').tab('show')
+    })
+    function logout() {
+        $.ajax({
+            type : "post",
+            url : "/user/logout",//访问路径
+            dataType : "text",
+            success : function(obj) {
+                window.location.href = "index.html";
+            },
+            error : function(data) {
+                window.location.href = "index.html";
+            }
+        });
+    }
+
+    $("li").each(function  (){
+        if($(this).attr("role") == "presentation"){
+            $(this).click(function(){
+                $("li").attr("class","");
+                $("#main-menu").attr("class","navbar-collapse collapse");
+                $("#main-menu").attr("style","");
+                $(this).attr("class","nav-current");
+            });
+        }
+    });
+
+    String.prototype.replaceAll = function (FindText, RepText) {
+        regExp = new RegExp(FindText, "g");
+        return this.replace(regExp, RepText);
+    }
+
+    function selectDaily() {
+        $('#selectDaily').tab('show');
+        var i=1;
+        daily(i);
+        $(window).scroll(function(){
+            var scrollTop = $(this).scrollTop();               //滚动条距离顶部的高度
+            var scrollHeight = $(document).height();                   //当前页面的总高度
+            var windowHeight = $(this).height();                   //当前可视的页面高度
+            if(scrollTop + windowHeight >= scrollHeight){        //距离顶部+当前高度 >=文档总高度 即代表滑动到底部
+                alert("下拉加载，要在这调用啥方法？");
+                i=i+1;
+                daily(i);
+            }else if(scrollTop<=0){         //滚动条距离顶部的高度小于等于0
+                alert("上拉刷新，要在这调用啥方法？");
+                daily(1);
+            }
+        })
+
+    }
+
+    function daily(i){
+        var data={
+            i:i
+        };
+        var html = '';
+        $.ajax({
+            type: "POST",
+            url: "/daily/queryDaily",//访问路径
+            dataType: "json",
+            data : JSON.stringify(data),
+            contentType: "application/json",
+            success: function (obj) {
+                var code = obj.code;
+                var msg = obj.msg;
+                if (code == 100) {
+                    $.each(obj.data, function (i, item) {
+                        html += ' <article id="110" class="post"><div class="post-head"><h1 class="post-title">';
+                        if (item.title == '' || item.title == null) {
+                            html += '无标题';
+                        } else {
+                            html += item.title;
+                        }
+                        var str = item.daily.replaceAll("\n", "<br />");
+                        str = str.replaceAll("\r", "<br />");
+
+                        html += '</h1><div class="post-meta"><span class="author">作者：<span style="color: darkorange">' + item.userName + '</span></span> •';
+                        html += '<time class="post-date">' + item.date + '</time></div></div><div class="post-content"><p>' + str + '</p></div>';
+                        if (item.dif == '1') {
+                            html += '<div class="post-permalink"><a href="#addDaily" aria-controls="addDaily" role="tab" data-toggle="tab" class="btn btn-default" onclick="updateDaily(' + item.did + ')">修改日报</a>'
+                        }
+                        html += '<footer class="post-footer clearfix"><div class="pull-left tag-list"><i class="fa fa-folder-open-o"></i>\n' +
+                            '</div><div class="pull-right share"></div></footer></article>';
+                    });
+                    $('.daily').append(html);
+                } else {
+                    new $.flavr(msg);
+                }
+            },
+            error: function (obj) {
+            }
+        });
+    }
+
+    function updateDaily(did) {
+        if(did!=""||did!=null){
+            var data={
+                did:did
+            }
+            $.ajax({
+                type: "POST",
+                url: "/daily/querySingleDaily",//访问路径
+                dataType: "json",
+                contentType : "application/json",
+                data : JSON.stringify(data),
+                success: function (obj) {
+                    var code = obj.code;
+                    var msg = obj.msg;
+                    if (code == 100) {
+                        $('#exampleInputTitle').val(obj.data.title);
+                        $('#exampleInputDaily').val(obj.data.daily);
+                        $("#date").val(obj.data.date);
+                        $("#flag").val(obj.data.did);
+                    } else {
+                        new $.flavr(msg);
+                    }
+                },
+                error: function (obj) {
+                }
+            });
+        }
+    }
+    function addDaily() {
+        var date = $("#date").val();
+        var title=$("#exampleInputTitle").val();
+        var daily = $("#exampleInputDaily").val();
+        var did = $("#flag").val();
+        var data={
+            date:date,
+            title:title,
+            daily:daily,
+            did:did
+        };
+        if (date!="" && daily!="") {
+            $("#addButton").attr("disabled","true");
+            $.ajax({
+                type : "POST",
+                url : did=="" ? "/daily/addDaily" : "/daily/updateDaily",//访问路径
+                dataType : "json",
+                contentType : "application/json",
+                data : JSON.stringify(data),
+                success : function(obj) {
+                    $('#addButton').removeAttr("disabled");
+                    var code = obj.code;
+                    var msg = obj.msg;
+                    if (code == 100) {
+                        $("#exampleInputTitle").val("");
+                        $("#exampleInputDaily").val("");
+                        $("#flag").val("");
+                        new $.flavr(obj.msg);
+                    } else {
+                        new $.flavr(obj.msg);
+                    }
+                },
+                error : function(obj) {
+                    $('#addButton').removeAttr("disabled");
+                    new $.flavr(obj.msg);
+                }
+            });
+        } else {
+            new $.flavr("请正确填写");
+        }
+    }
+
+    function updatePassword() {
+        var oldPassword = $("#oldPassword").val();
+        var newPassword=$("#newPassword").val();
+        var newPassword1 = $("#newPassword1").val();
+        var data={
+            oldPassword:oldPassword,
+            newPassword:newPassword,
+            newPassword1:newPassword1
+        };
+        if (oldPassword=="" || newPassword==""|| newPassword1=="") {
+            new $.flavr("请正确填写");
+            return;
+        }else if(oldPassword==newPassword){
+            new $.flavr("新密码与旧密码不能相同");
+            return;
+        }else if(newPassword!=newPassword1){
+            new $.flavr("新密码与确认密码不相同");
+            return;
+        }else{
+            $("#updateButton").attr("disabled","true");
+            $.ajax({
+                type : "POST",
+                url : "/user/updatePassword",//访问路径
+                dataType : "json",
+                contentType : "application/json",
+                data : JSON.stringify(data),
+                success : function(obj) {
+                    $('#updateButton').removeAttr("disabled");
+                    var code = obj.code;
+                    var msg = obj.msg;
+                    if (code == 100) {
+                        $("#oldPassword").val("");
+                        $("#newPassword").val("");
+                        $("#newPassword1").val("");
+                        new $.flavr(obj.msg);
+                    } else {
+                        new $.flavr(obj.msg);
+                    }
+                },
+                error : function(obj) {
+                    $('#updateButton').removeAttr("disabled");
+                    new $.flavr(obj.msg);
+                }
+            });
+        }
+    }
+</script>
+<link rel="stylesheet" type="text/css" href="../static/css/style2.css" />
+<link rel="stylesheet" type="text/css" href="../static/css/animate.css" />
+<link rel="stylesheet" type="text/css" href="../static/css/flavr.css" />
+<script type="text/javascript" src="../static/js/flavr.min.js"></script>
+</body>
+</html>

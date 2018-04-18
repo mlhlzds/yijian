@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.easy.dao.UserDao">
+	<resultMap type="com.easy.entity.User" id="userObj">
+		<result column="u_id" property="uid"/>
+		<result column="u_username" property="username"/>
+		<result column="u_password" property="password"/>
+		<result column="u_active" property="active"/>
+		<result column="u_leave" property="leaveDate"/>
+	</resultMap>
+	
+	<resultMap type="com.easy.entity.Menu" id="menuObj">
+		<result column="m_id" property="mid"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="menu_name" property="menuName"/>
+		<result column="level" property="level"/>
+		<result column="menu_url" property="menuUrl"/>
+		<result column="order_id" property="orderId"/>
+	</resultMap>
+	
+	<resultMap type="com.easy.entity.Role" id="roleObj">
+		<result column="r_id" property="rid"/>
+		<result column="role" property="role"/>
+		<result column="role_name" property="roleName"/>
+	</resultMap>
+	
+	<resultMap type="com.easy.entity.Permission" id="prmObj">
+		<result column="p_id" property="id"/>
+		<result column="permission" property="permission"/>
+		<result column="permission_name" property="permissionName"/>
+	</resultMap>
+	
+	
+	<select id="queryAllMenus" resultMap="menuObj">
+		select * from y_menu
+	</select>
+	
+	<select id="queryAllRoles" resultMap="roleObj">
+		select * from y_role
+	</select>
+	
+	<select id="queryAllPermissions" resultMap="prmObj">
+		select * from y_permission
+	</select>
+
+	<select id="selectUserByName" parameterType="java.util.Map" resultMap="userObj">
+		select * from y_user where u_username =#{username}
+	</select>
+
+	<insert id="addUser" parameterType="java.util.Map">
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="uid">
+			select LAST_INSERT_ID() as uid
+		</selectKey>
+		insert into y_user
+		(u_username,u_active) values(#{username},1)
+	</insert>
+	
+	<insert id="addUserAndRole" parameterType="java.util.Map">
+		insert into y_user_role
+		(u_id, r_id) values(#{uid}, #{roleId})
+	</insert>
+
+	<select id="selectMenuByUid" parameterType="java.lang.String" resultMap="menuObj">
+		select m.* from y_user_role ur,y_role_menu rm, y_menu m
+		WHERE ur.r_id = rm.r_id 
+		and rm.m_id = m.m_id
+		and ur.u_id = #{id}
+		ORDER BY m.order_id  ;
+	</select>
+	
+	<update id="passwordUpdate" parameterType="java.util.Map">
+		update y_user set
+		u_password= #{password} where u_id = #{uid}
+	</update>
+	
+	
+	<select id="queryRoles" resultType="java.util.Map">
+		select r_id as rid , role, role_name as roleName from y_role
+		where 1=1
+		<if test="rid != null and rid != '' ">
+			and r_id = #{rid}
+		</if>
+	</select>
+	
+	<select id="queryPagesRoles" resultType="java.util.Map">
+		select r_id as rid , role, role_name as roleName from y_role
+		where 1=1
+		<if test="rid != null and rid != '' ">
+			and r_id = #{rid}
+		</if>
+		limit #{pageStart}, #{limit}
+	</select>
+	
+	<select id="countRole" parameterType="java.util.Map" resultType="java.lang.Integer" >
+		select count(r_id) as count from y_role
+		where 1=1
+		<if test="rid != null and rid != '' ">
+			and r_id = #{rid}
+		</if>
+	</select>
+	
+	<select id="queryRolesByUser" parameterType="java.lang.String" resultType="com.easy.entity.Role">
+		select r.r_id as rid , r.role, r.role_name as roleName 
+		from y_role r ,y_user_role ur
+		where r.r_id = ur.r_id 
+		and ur.u_id = #{uid}
+	</select>
+	
+	<select id="queryPermissionsByUser" parameterType="java.lang.String" resultType="com.easy.entity.Permission">
+		SELECT p.p_id as id, p.permission as permission, p.permission_name as permissionName
+		FROM y_user_role ur, y_role_menu rm, y_menu_permission mp, y_permission p
+		WHERE ur.r_id = rm.r_id
+		AND rm.m_id = mp.m_id
+		AND mp.p_id = p.p_id
+		AND ur.u_id = #{uid}
+	</select>
+	
+	<select id="queryUser" parameterType="java.util.Map" resultType="java.util.Map" >
+		select u.u_id as uid ,u.u_active as active, r.r_id AS rid, u.u_username AS userName,u.u_ldate as ldate, u.u_hdate1 as hdate1 , u.u_hdate2 as hdate2,r.role_name AS roleName
+		from y_user u
+		LEFT JOIN y_user_role ur on u.u_id = ur.u_id
+		LEFT JOIN y_role r on  ur.r_id = r.r_id
+		where 1=1
+		<if test="username != null and username != '' ">
+			and u.u_username like concat('%', '${username}', '%')
+		</if>
+		<if test="roleId != null and roleId != '' ">
+			and r.r_id = #{roleId}
+		</if>
+		group by 
+		u.u_id limit #{pageStart}, #{limit}
+	</select>
+	
+	<select id="countUser" parameterType="java.util.Map" resultType="java.lang.Integer" >
+		select count(u.u_id) as cnt
+		from y_user u
+		LEFT JOIN y_user_role ur on u.u_id = ur.u_id
+		LEFT JOIN y_role r on  ur.r_id = r.r_id
+		where 1=1
+		<if test="username != null and username != '' ">
+			and u.u_username like concat('%', '${username}', '%')
+		</if>
+		<if test="roleId != null and roleId != '' ">
+			and r.r_id = #{roleId}
+		</if>
+	</select>
+	
+	<delete id="deleteUser" parameterType="java.util.Map">
+		delete from y_user where u_id = #{uid}
+	</delete>
+	
+	<delete id="deleteUserAndRole" parameterType="java.util.Map">
+		delete from y_user_role where u_id = #{uid}
+	</delete>
+	
+	<select id="countUserAndRole" parameterType="java.util.Map" resultType="java.lang.Integer" >
+		select count(ur_id) from y_user_role where r_id = #{rid}
+	</select>
+	
+	<delete id="deleteRoleAndMenuByRid" parameterType="java.util.Map">
+		delete from y_role_menu where r_id = #{rid}
+	</delete>
+	
+	<delete id="deleteRole" parameterType="java.util.Map">
+		delete from y_role where r_id = #{rid}
+	</delete>
+	
+	<update id="updateRole" parameterType="java.util.Map">
+		update y_role
+		<set>
+			<if test="role != null and role != '' ">
+				role= #{role}, 
+			</if>
+			<if test="roleName != null and roleName != '' ">
+				role_name= #{roleName}, 
+			</if>
+		</set>
+		where r_id = #{rid}
+	</update>
+
+	<update id="updateState" parameterType="java.util.Map">
+		update y_user
+		<set>
+			<if test="active != null and active != '' ">
+				u_active=#{active},
+			</if>
+			<if test="active=='1'.toString()">
+				u_ldate=NULL,u_hdate1=NULL ,u_hdate2=NULL,
+			</if>
+			<if test="active=='2'.toString() and hdate1!=null and hdate1 !='' and hdate2!=null and hdate2 !=''">
+				u_hdate1=#{hdate1},u_hdate2=#{hdate2},u_ldate=NULL,
+			</if>
+			<if test="active=='3'.toString() and ldate!=null and ldate !=''">
+				u_ldate=#{ldate},u_hdate1=NULL ,u_hdate2=NULL,
+			</if>
+		</set>
+		where u_id = #{uid}
+	</update>
+
+	<insert id="addRole" parameterType="java.util.Map">
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+			keyProperty="rid">
+			select LAST_INSERT_ID() as rid
+		</selectKey>
+		insert into y_role
+		(role, role_name) values(#{role}, #{roleName})
+	</insert>
+	
+	<select id="queryMenuByRid" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT a.*, b.m_id as flag
+		FROM y_menu a
+		LEFT JOIN (
+			SELECT m_id
+			FROM y_role_menu
+			WHERE r_id = #{rid} 
+		) b ON a.m_id = b.m_id
+	</select>
+	
+	<insert id="insertRoleAndMenus" parameterType="java.util.Map">
+		INSERT INTO y_role_menu(r_id, m_id)
+		SELECT #{rid} AS r_id, m.m_id FROM y_menu m
+			WHERE m.m_id in 
+			<foreach collection="mids" index="index" item="item" separator="," open="(" close=")">
+				#{item}
+			</foreach>
+			AND NOT EXISTS (
+				SELECT 1 FROM y_role_menu rm
+				WHERE rm.r_id = #{rid} AND rm.m_id = m.m_id)
+	</insert>
+	
+	<delete id="deleteRoleAndMenus" parameterType="java.util.Map">
+		delete from y_role_menu where r_id = #{rid} and m_id not in
+		<foreach collection="mids" index="index" item="item" separator="," open="(" close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<select id="queryPagesMenus" resultType="java.util.Map">
+		select m_id as mid , parent_id as parentId, menu_name as menuName ,
+				level, menu_url as menuURL, order_id as orderId
+		from y_menu
+		limit #{pageStart}, #{limit}
+	</select>
+	
+</mapper>
