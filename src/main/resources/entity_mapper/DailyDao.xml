@@ -26,10 +26,13 @@
 	</select>
 
 	<select id="querySingleDaily" parameterType="java.util.Map" resultType="java.util.Map" >
-		select yd.d_id as did, yd.d_daily as daily , yd.d_title as title ,yd.d_date as date from y_daily yd
+		select yd.d_id as did, yd.d_daily as daily , yd.d_title as title ,yd.d_date as date ,yd.d_if as dif from y_daily yd
 		WHERE 1=1
 		<if test="did != null and did != '' ">
 			and yd.d_id =#{did}
+		</if>
+		<if test="date != null and date != '' ">
+			and yd.d_date =#{date}
 		</if>
 	</select>
 

@@ -102,7 +102,7 @@
                 <textarea class="form-control" rows="3" id="exampleInputDaily"></textarea>
             </div>
             <input type="hidden" value="" id="flag">
-            <button type="button" class="btn btn-default" onclick="addDaily()" id="addButton" data-toggle="popover">提交</button>
+            <input type="button" class="btn btn-default" onclick="addDaily()" id="addButton" data-toggle="popover" value="提交"/>
             <input type="reset" class="btn btn-default" value="重置">
         </article>
         </form>
@@ -155,13 +155,44 @@
     $(document).ready(function(e) {
         var sysdate = new Date().Format("yyyy-MM-dd");
         $("#date").val(sysdate);
+        var data={
+            date:sysdate
+        }
+        $.ajax({
+            type: "POST",
+            url: "/daily/querySingleDaily",//访问路径
+            dataType: "json",
+            data : JSON.stringify(data),
+            contentType : "application/json",
+            success: function (obj) {
+                var code = obj.code;
+                var msg = obj.msg;
+                if (code == 100) {
+                    if(obj.data.dif=='0'){
+                        $("#addButton").attr("disabled",true);
+                    }else{
+                        console.info(obj.data)
+                        $('#exampleInputTitle').val(obj.data.title);
+                        $('#exampleInputDaily').val(obj.data.daily);
+                        $("#date").val(obj.data.date);
+                        $("#flag").val(obj.data.did);
+                        $("#addButton").val("修改");
+                    }
+
+                } else {
+                    new $.flavr(msg);
+                }
+            },
+            error: function (obj) {
+            }
+        });
     });
 </script>
 <script>
     //执行一个laydate实例
     laydate.render({
         elem: '#date'
-        ,min: -1
+        ,min: 0
         ,max: 0
         ,theme: '#e67e22'
     });
