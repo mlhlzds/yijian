@@ -242,17 +242,18 @@
                     return false;
                 }else{
                     i=i+1;
-                    //$('.daily').append('<p class="text-center id="loading">正在加载中...</p>');
+                    alert(i);
                     daily(i);
                 }
-            }else if(scrollTop<=0){         //滚动条距离顶部的高度小于等于0
+            }/*else if(scrollTop<=0){         //滚动条距离顶部的高度小于等于0
                 daily(1);
-            }
+            }*/
         })
 
     }
 
     function daily(i){
+        $('.daily').append('<p class="text-center" id="loading">正在加载中...</p>');
         var data={
             i:i
         };
@@ -289,7 +290,7 @@
                         html+='<p class="text-center">无更多记录</p>';
                         last="last";
                     }
-                    //$("#loading").hide();
+                    $("#loading").remove();
                     $('.daily').append(html);
                 } else {
                     new $.flavr(msg);
