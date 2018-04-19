@@ -87,7 +87,7 @@
 
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="addDaily">
-        <form>
+        <form id="addForm">
         <article id="110" class="post">
             <div class="form-group">
                 <label for="date">发送时间</label>
@@ -174,6 +174,9 @@
                     if(obj.data.dif=='0'){
                         $("#addButton").attr("disabled",true);
                         $("#resetButton").attr("disabled",true);
+
+                        $("#addButton").attr("style","border: 1px solid #303030;background: #303030;color: #ffffff;");
+                        $("#resetButton").attr("style","border: 1px solid #303030;background: #303030;color: #ffffff;");
                     }else{
                         $('#exampleInputTitle').val(obj.data.title);
                         $('#exampleInputDaily').val(obj.data.daily);
@@ -360,16 +363,20 @@
         }
     }
     function addDaily() {
-        var date = $("#date").val();
+        var addForm = $('addForm').serializeArray();
+        $.each(addForm, function() {
+            d[this.name] = this.value;
+        });
+       /* var date = $("#date").val();
         var title=$("#exampleInputTitle").val();
         var daily = $("#exampleInputDaily").val();
-        var did = $("#flag").val();
-        var data={
+        var did = $("#flag").val();*/
+        /*var data={
             date:date,
             title:title,
             daily:daily,
             did:did
-        };
+        };*/
         if (date!="" && daily!="") {
             $("#addButton").attr("disabled","true");
             $.ajax({
@@ -377,7 +384,7 @@
                 url : did=="" ? "/daily/addDaily" : "/daily/updateDaily",//访问路径
                 dataType : "json",
                 contentType : "application/json",
-                data : JSON.stringify(data),
+                data : JSON.stringify(addForm),
                 success : function(obj) {
                     $('#addButton').removeAttr("disabled");
                     var code = obj.code;
