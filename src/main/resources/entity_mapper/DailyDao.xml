@@ -4,16 +4,25 @@
 
 	<insert id="addDaily" parameterType="java.util.Map">
 		insert into y_daily
-		(d_title, d_daily ,d_date,u_id) values(#{title}, #{daily} ,#{date},#{uid})
+		(d_title, d_daily ,d_date,d_if,u_id) values(#{title}, #{daily} ,#{date},'1',#{uid})
 	</insert>
 
 	<select id="queryDaily" parameterType="java.util.Map" resultType="java.util.Map" >
 		select yd.d_id as did, yd.d_daily as daily , yd.d_title as title ,yd.d_date as date ,yd.d_if as dif,yu.u_username as userName from y_daily yd ,y_user yu
 		WHERE yd.u_id=yu.u_id
+		<if test="username != null and username != '' ">
+			and yu.u_username like concat('%', '${username}', '%')
+		</if>
+		<if test="date1 != null and date1 != '' ">
+			and yd.d_date &gt;= #{date1}
+		</if>
+		<if test="date2 != null and date2 != '' ">
+			and yd.d_date &lt;= #{date2}
+		</if>
 		group by
 		yd.d_id
 		order by yd.d_id desc
-		limit #{pageStart}, #{limit}
+		limit ${pageStart}, ${limit}
 	</select>
 
 	<select id="querySingleDaily" parameterType="java.util.Map" resultType="java.util.Map" >
@@ -27,6 +36,15 @@
 	<select id="countDaily" parameterType="java.util.Map" resultType="java.lang.Integer" >
 		select count(yd.d_id) from y_daily yd ,y_user yu
 		WHERE yd.u_id=yu.u_id
+		<if test="username != null and username != '' ">
+			and yu.u_username like concat('%', '${username}', '%')
+		</if>
+		<if test="date1 != null and date1 != '' ">
+			and yd.d_date &gt;= #{date1}
+		</if>
+		<if test="date2 != null and date2 != '' ">
+			and yd.d_date &lt;= #{date2}
+		</if>
 	</select>
 
 	<update id="updateDaily" parameterType="java.util.Map">

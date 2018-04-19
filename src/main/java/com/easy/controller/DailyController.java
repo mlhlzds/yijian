@@ -61,29 +61,42 @@ public class DailyController  extends BaseController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/queryDaily", method = RequestMethod.POST)
+    @RequestMapping(value = "/querySuperDaily", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnMsg queryDaily(@RequestBody ModelMap param , HttpServletRequest request, HttpServletResponse response) {
+    public ReturnMsg querySuperDaily(String page, String limit, String username, String date1, String date2,
+                                     HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
-        int limit=0;
-        if(param.get("limit")!=null&&param.get("page")!=null){
-            limit=Integer.parseInt(param.get("limit").toString());
             map.put("pageStart",
-                    (Integer.parseInt(param.get("page").toString()) - 1) * Integer.parseInt(param.get("limit").toString()));//
-            map.put("limit", param.get("limit"));
-            map.put("username",param.get("username"));
-            map.put("date1",param.get("date1"));
-            map.put("date2",param.get("date2"));
-        }else{
-            limit=5;
+                    (Integer.parseInt(page)-1) * Integer.parseInt(limit));
+            map.put("limit", limit);
+            map.put("username", username);
+            map.put("date1", date1);
+            map.put("date2", date2);
+
+        ReturnMsg ret = dailyService.queryDaily(map);
+        return ret;
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/queryNormalDaily", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnMsg queryNormalDaily(@RequestBody ModelMap param , HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        int limit=5;
             map.put("pageStart",
                     (Integer.parseInt(param.get("i").toString()) - 1) * limit);//Integer.parseInt(limit))
             map.put("limit", limit);
-        }
         ReturnMsg ret = dailyService.queryDaily(map);
         int count=ret.getCount();
-        if(((Integer.parseInt(param.get("i").toString())) * limit)==count){
-            ret.setInfo("last");
+        if(param.get("i")!=null&&param.get("i")!=""){
+            if(((Integer.parseInt(param.get("i").toString())) * limit)==count){
+                ret.setInfo("last");
+            }
         }
         return ret;
     }
@@ -112,7 +125,7 @@ public class DailyController  extends BaseController {
     @RequestMapping(value = "/exportExcel")
     @RequiresPermissions("/daily/exportExcel")
     @ResponseBody
-    public void queryMessage2(String username,
+    public void queryMessage2(String did,String username,
                               String date1, String date2, HttpServletRequest request,
                               HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();

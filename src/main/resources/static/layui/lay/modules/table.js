@@ -123,17 +123,17 @@ layui.define(["laytpl", "laypage", "layer", "form"], function (e) {
                 c[o.pageName] = e,
                     c[o.limitName] = n.limit;
                 t.extend(c, n.where);
-                var temp = c;
+                //var temp = c;
                 var contentType =  "text/html";
-                if("/daily/queryDaily" == n.url){
+                /*if("/daily/queryDaily" == n.url){
                     temp = JSON.stringify(c);
                     contentType =  "application/json";
-                }
+                }*/
                 t.ajax({
                     type: n.method || "get",
                     url: n.url,
-                    data:temp ,
-                    contentType:contentType,
+                    data:c ,
+                    //contentType:contentType,
                     dataType: "json",
                     success: function (t) {
                         return t[r.statusName] != r.statusCode ? (a.renderForm(), a.layMain.html('<div class="' + h + '">' + (t[r.msgName] || "返回的数据状态异常") + "</div>")) : (a.renderData(t, e, t[r.countName]), d(), i && l.close(i), void("function" == typeof n.done && n.done(t, e, t[r.countName])))
