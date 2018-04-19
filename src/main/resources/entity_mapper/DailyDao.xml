@@ -14,7 +14,6 @@
 		yd.d_id
 		order by yd.d_id desc
 		limit #{pageStart}, #{limit}
-		/*order by yd.d_id desc*/
 	</select>
 
 	<select id="querySingleDaily" parameterType="java.util.Map" resultType="java.util.Map" >

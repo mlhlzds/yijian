@@ -65,10 +65,21 @@ public class DailyController  extends BaseController {
     @ResponseBody
     public ReturnMsg queryDaily(@RequestBody ModelMap param , HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
-        int limit=5;
-        map.put("pageStart",
-                (Integer.parseInt(param.get("i").toString()) - 1) * limit);//Integer.parseInt(limit))
-        map.put("limit", limit);
+        int limit=0;
+        if(param.get("limit")!=null&&param.get("page")!=null){
+            limit=Integer.parseInt(param.get("limit").toString());
+            map.put("pageStart",
+                    (Integer.parseInt(param.get("page").toString()) - 1) * Integer.parseInt(param.get("limit").toString()));//
+            map.put("limit", param.get("limit"));
+            map.put("username",param.get("username"));
+            map.put("date1",param.get("date1"));
+            map.put("date2",param.get("date2"));
+        }else{
+            limit=5;
+            map.put("pageStart",
+                    (Integer.parseInt(param.get("i").toString()) - 1) * limit);//Integer.parseInt(limit))
+            map.put("limit", limit);
+        }
         ReturnMsg ret = dailyService.queryDaily(map);
         int count=ret.getCount();
         if(((Integer.parseInt(param.get("i").toString())) * limit)==count){
@@ -101,7 +112,7 @@ public class DailyController  extends BaseController {
     @RequestMapping(value = "/exportExcel")
     @RequiresPermissions("/daily/exportExcel")
     @ResponseBody
-    public void queryMessage2(String page, String limit,String username,
+    public void queryMessage2(String username,
                               String date1, String date2, HttpServletRequest request,
                               HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
