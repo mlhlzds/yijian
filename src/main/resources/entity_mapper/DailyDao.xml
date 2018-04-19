@@ -57,6 +57,17 @@
 		where d_id = #{did}
 	</update>
 
+	<update id="updateFlag" parameterType="java.util.List">
+		update y_daily
+		<set>
+			d_if= '0'
+		</set>
+		where d_id in
+		<foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+			#{item.did}
+		</foreach>
+	</update>
+
 	<delete id="deleteDaily" parameterType="java.util.Map">
 		delete from y_daily where d_id = #{did}
 	</delete>

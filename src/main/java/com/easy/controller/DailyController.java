@@ -125,7 +125,7 @@ public class DailyController  extends BaseController {
     @RequestMapping(value = "/exportExcel")
     @RequiresPermissions("/daily/exportExcel")
     @ResponseBody
-    public void queryMessage2(String did,String username,
+    public void queryMessage2(String username,
                               String date1, String date2, HttpServletRequest request,
                               HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -136,18 +136,23 @@ public class DailyController  extends BaseController {
         map.put("date1", date1);
         map.put("date2", date2);
         map.put("flag","1");
-        ReturnMsg ret = dailyService.queryDaily(map);
+        try{
+            ReturnMsg ret = dailyService.queryDaily(map);
+            dailyService.updateFlag((List<Map<String, Object>>)ret.getData());
 
+            Map<String, String> titles = new LinkedHashMap<String, String>();
+            titles.put("userName", "姓名");
+            titles.put("title", "标题");
+            titles.put("daily", "日报");
+            titles.put("date", "时间");
 
-        Map<String, String> titles = new LinkedHashMap<String, String>();
-        titles.put("userName", "姓名");
-        titles.put("title", "标题");
-        titles.put("daily", "日报");
-        titles.put("date", "时间");
+            //titles 表格的列名，可以不手动添加，自动取list第一行数据，生成;
+            //ExcelUtil.expExcel("留言",null,(List)ret.getData(),response);
+            ExcelUtil.expExcel("日报表",titles,(List)ret.getData(),response);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
 
-        //titles 表格的列名，可以不手动添加，自动取list第一行数据，生成;
-        //ExcelUtil.expExcel("留言",null,(List)ret.getData(),response);
-        ExcelUtil.expExcel("日报表",titles,(List)ret.getData(),response);
     }
 
     /**

@@ -49,6 +49,13 @@ public interface DailyDao {
 
     /**
      *
+     * @param list
+     * @return
+     */
+    public int updateFlag(List list);
+
+    /**
+     *
      * @param paMap
      * @return
      */

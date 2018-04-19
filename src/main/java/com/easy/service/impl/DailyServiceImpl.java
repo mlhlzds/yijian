@@ -91,6 +91,22 @@ public class DailyServiceImpl implements DailyService{
 	}
 
 	@Override
+	public ReturnMsg updateFlag(List list) {
+		ReturnMsg ret = new ReturnMsg();
+		try {
+			dailyDao.updateFlag(list);
+			ret.setCode(100);
+			ret.setMsg("修改这状态成功");
+		} catch (Exception e) {
+			log.info("系统异常: ", e);
+			ret.setCode(999);
+			ret.setMsg("系统异常，修改失败");
+		}
+
+		return ret;
+	}
+
+	@Override
 	public void deleteDaily(Map<String, Object> param) {
 		dailyDao.deleteDaily(param);
 	}
