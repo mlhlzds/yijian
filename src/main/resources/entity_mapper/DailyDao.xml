@@ -3,6 +3,10 @@
 <mapper namespace="com.easy.dao.DailyDao">
 
 	<insert id="addDaily" parameterType="java.util.Map">
+		<selectKey resultType="java.lang.Integer" order="AFTER"
+				   keyProperty="did">
+			select LAST_INSERT_ID() as did
+		</selectKey>
 		insert into y_daily
 		(d_title, d_daily ,d_date,d_if,u_id) values(#{title}, #{daily} ,#{date},'1',#{uid})
 	</insert>
@@ -21,7 +25,7 @@
 		</if>
 		group by
 		yd.d_id
-		order by yd.d_id desc
+		order by yd.d_id desc,yd.d_date desc
 		limit ${pageStart}, ${limit}
 	</select>
 
@@ -57,7 +61,7 @@
 				d_daily = #{daily},
 				d_date= #{date}
 		</set>
-		where d_id = #{did}
+		where d_id = #{flag}
 	</update>
 
 	<update id="updateFlag" parameterType="java.util.List">

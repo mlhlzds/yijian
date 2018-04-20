@@ -70,9 +70,9 @@
                 </div>
                 <div class="collapse navbar-collapse" id="main-menu">
                     <ul class="menu">
-                        <li class="nav-current" role="presentation"><a href="#addDaily" aria-controls="addDaily"
+                        <li class="nav-current" role="presentation" onclick="test()"><a href="#addDaily" aria-controls="addDaily"
                                                                        role="tab" data-toggle="tab">发送日报</a></li>
-                        <li role="presentation"><a href="#selectDaily" aria-controls="selectDaily" role="tab" data-toggle="tab" onclick="selectDaily()">日报查询</a>
+                        <li role="presentation" onclick="selectDaily()"><a href="#selectDaily" aria-controls="selectDaily" role="tab" data-toggle="tab" >日报查询</a>
                         </li>
                         <li role="presentation"><a href="#updatePassword" aria-controls="updatePassword" role="tab"
                                                    data-toggle="tab">修改密码</a></li>
@@ -87,19 +87,19 @@
 
 <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="addDaily">
-        <form id="addForm">
+        <form name="addForm">
         <article id="110" class="post">
             <div class="form-group">
                 <label for="date">发送时间</label>
                 <input type="text" id="date" class="form-control" placeholder="yyyy-MM-dd">
             </div>
             <div class="form-group">
-                <label for="exampleInputTitle">标题</label>
-                <input type="text" class="form-control" id="exampleInputTitle" placeholder="title">
+                <label for="title">标题</label>
+                <input type="text" class="form-control" id="title" placeholder="title">
             </div>
             <div class="form-group">
-                <label for="exampleInputDaily">日报</label>
-                <textarea class="form-control" rows="3" id="exampleInputDaily"></textarea>
+                <label for="daily">日报</label>
+                <textarea class="form-control" rows="3" id="daily"></textarea>
             </div>
             <input type="hidden" value="" id="flag">
             <input type="button" class="btn btn-default" onclick="addDaily()" id="addButton" data-toggle="popover" value="提交"/>
@@ -123,7 +123,7 @@
     </div>
 
     <div role="tabpanel" class="tab-pane" id="updatePassword">
-        <form>
+        <form name="passwordForm">
         <article id="110" class="post">
             <div class="form-group">
                 <label for="oldPassword">原始密码</label>
@@ -156,6 +156,13 @@
 <script src="../static/layui/js/date.js" type="text/javascript"></script>
 <script>
     $(document).ready(function(e) {
+        docInit();
+    });
+    function test(){
+        docInit();
+    }
+
+    function docInit(){
         var sysdate = new Date().Format("yyyy-MM-dd");
         $("#date").val(sysdate);
         var data={
@@ -178,12 +185,17 @@
                         $("#addButton").attr("style","border: 1px solid #303030;background: #303030;color: #ffffff;");
                         $("#resetButton").attr("style","border: 1px solid #303030;background: #303030;color: #ffffff;");
                     }else{
-                        $('#exampleInputTitle').val(obj.data.title);
-                        $('#exampleInputDaily').val(obj.data.daily);
+                        $('#title').val(obj.data.title);
+                        $('#daily').val(obj.data.daily);
                         $("#date").val(obj.data.date);
                         $("#flag").val(obj.data.did);
                         $("#addButton").val("修改");
                     }
+                }else if(code == 101){
+                    $('#title').val("");
+                    $('#daily').val("");
+                    $("#flag").val("");
+                    $("#addButton").val("提交");
                 } else {
                     new $.flavr(msg);
                 }
@@ -191,7 +203,7 @@
             error: function (obj) {
             }
         });
-    });
+    }
 </script>
 <script>
     //执行一个laydate实例
@@ -221,11 +233,12 @@
         $('#selectDaily').tab('show');
         var sysdate = new Date().Format("yyyy-MM-dd");
         $("#date").val(sysdate);
-        $("#exampleInputDaily").val();
-        $("#exampleInputDaily").val();
+        $("#title").val();
+        $("#daily").val();
     })
 
     $('#addDaily a').click(function (e) {
+        window.location.reload();
         $('#addDaily').tab('show');
     })
 
@@ -264,6 +277,7 @@
 
     var last;
     function selectDaily() {
+        $('.daily').html("");
         $('#selectDaily').tab('show');
         var i=1;
         daily(i);
@@ -349,10 +363,11 @@
                     var code = obj.code;
                     var msg = obj.msg;
                     if (code == 100) {
-                        $('#exampleInputTitle').val(obj.data.title);
-                        $('#exampleInputDaily').val(obj.data.daily);
+                        $('#title').val(obj.data.title);
+                        $('#daily').val(obj.data.daily);
                         $("#date").val(obj.data.date);
                         $("#flag").val(obj.data.did);
+                        $("#addButton").val("修改");
                     } else {
                         new $.flavr(msg);
                     }
@@ -363,37 +378,26 @@
         }
     }
     function addDaily() {
-        var addForm = $('addForm').serializeArray();
-        $.each(addForm, function() {
-            d[this.name] = this.value;
-        });
-       /* var date = $("#date").val();
-        var title=$("#exampleInputTitle").val();
-        var daily = $("#exampleInputDaily").val();
-        var did = $("#flag").val();*/
-        /*var data={
-            date:date,
-            title:title,
-            daily:daily,
-            did:did
-        };*/
-        if (date!="" && daily!="") {
+        var form=document.forms['addForm'].elements;
+        if(form.date.value=="" || form.daily.value=="") {
+            new $.flavr("请正确填写");
+            return;
+        }else{
             $("#addButton").attr("disabled","true");
             $.ajax({
                 type : "POST",
-                url : did=="" ? "/daily/addDaily" : "/daily/updateDaily",//访问路径
+                url : form.flag.value=="" ? "/daily/addDaily" : "/daily/updateDaily",//访问路径
                 dataType : "json",
                 contentType : "application/json",
-                data : JSON.stringify(addForm),
+                data : JSON.stringify(fromToData(form)),
                 success : function(obj) {
                     $('#addButton').removeAttr("disabled");
                     var code = obj.code;
                     var msg = obj.msg;
+                    console.log(code);
                     if (code == 100) {
-                        $("#exampleInputTitle").val("");
-                        $("#exampleInputDaily").val("");
-                        $("#flag").val("");
                         new $.flavr(obj.msg);
+                        updateDaily(obj.data.did);
                     } else {
                         new $.flavr(obj.msg);
                     }
@@ -403,37 +407,39 @@
                     new $.flavr(obj.msg);
                 }
             });
-        } else {
-            new $.flavr("请正确填写");
         }
     }
 
+    function fromToData(fromObj){
+        var data = {};
+        for(var i=0; i<fromObj.length; i++){
+            var temp = fromObj[i];
+            if(temp.type != "button") {
+                data[temp.id] = temp.value;
+            }
+        }
+        return data;
+    }
+
     function updatePassword() {
-        var oldPassword = $("#oldPassword").val();
-        var newPassword=$("#newPassword").val();
-        var newPassword1 = $("#newPassword1").val();
-        var data={
-            oldPassword:oldPassword,
-            newPassword:newPassword,
-            newPassword1:newPassword1
-        };
-        if (oldPassword=="" || newPassword==""|| newPassword1=="") {
+        var form=document.forms['passwordForm'].elements;
+        if(form.oldPassword.value=="" || form.newPassword.value==""|| form.newPassword1.value=="") {
             new $.flavr("请正确填写");
             return;
-        }else if(oldPassword==newPassword){
+        }else if(form.oldPassword.value==form.newPassword.value){
             new $.flavr("新密码与旧密码不能相同");
             return;
-        }else if(newPassword!=newPassword1){
+        }else if(form.newPassword.value!=form.newPassword1.value){
             new $.flavr("新密码与确认密码不相同");
             return;
-        }else{
+        }else
             $("#updateButton").attr("disabled","true");
             $.ajax({
                 type : "POST",
                 url : "/user/updatePassword",//访问路径
                 dataType : "json",
                 contentType : "application/json",
-                data : JSON.stringify(data),
+                data : JSON.stringify(fromToData(form)),
                 success : function(obj) {
                     $('#updateButton').removeAttr("disabled");
                     var code = obj.code;
@@ -452,7 +458,6 @@
                     new $.flavr(obj.msg);
                 }
             });
-        }
     }
 </script>
 <link rel="stylesheet" type="text/css" href="../static/css/style2.css" />

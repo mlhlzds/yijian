@@ -32,11 +32,14 @@ public class DailyServiceImpl implements DailyService{
 		try {
 			int i=dailyDao.addDaily(map);
 			if(i>0){
+				ret.setData(map);
 				ret.setCode(100);
 				ret.setMsg("添加日报成功！");
 			}
 		} catch (Exception e) {
 			log.info("系统异常: ", e);
+			ret.setCode(999);
+			ret.setMsg("系统异常，修改失败");
 		}
 		return ret;
 	}
@@ -64,9 +67,14 @@ public class DailyServiceImpl implements DailyService{
 		ReturnMsg ret = new ReturnMsg();
 		try {
 			List<Map<String, Object>> userList = dailyDao.querySingleDaily(param);// 查询日报
-			ret.setData(userList.get(0));
-			ret.setCode(100);
-			ret.setMsg("查询日报成功");
+			if(userList.size()>0){
+				ret.setData(userList.get(0));
+				ret.setCode(100);
+				ret.setMsg("查询日报成功");
+			}else{
+				ret.setCode(101);
+				ret.setMsg("未发送日报");
+			}
 		} catch (Exception e) {
 			log.info("系统异常: ", e);
 			ret.setMsg("查询失败");
@@ -78,9 +86,15 @@ public class DailyServiceImpl implements DailyService{
 	public ReturnMsg updateDaily(Map<String, Object> map) {
 		ReturnMsg ret = new ReturnMsg();
 		try {
-			dailyDao.updateDaily(map);
-			ret.setCode(100);
-			ret.setMsg("修改日报成功");
+			int count=dailyDao.updateDaily(map);
+			if(count==1){
+				ret.setCode(120);
+				ret.setMsg("修改日报成功");
+			}else{
+				ret.setCode(200);
+				ret.setMsg("修改日报失败");
+			}
+
 		} catch (Exception e) {
 			log.info("系统异常: ", e);
 			ret.setCode(999);
