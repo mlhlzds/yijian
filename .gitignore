@@ -12,7 +12,6 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
-.classess
 *.iws
 *.iml
 *.ipr
@@ -25,4 +24,4 @@ dist/
 nbdist/
 .nb-gradle/
 !/logs/
-/classes/
+
