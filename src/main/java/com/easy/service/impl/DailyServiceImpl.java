@@ -50,10 +50,15 @@ public class DailyServiceImpl implements DailyService{
 		ReturnMsg ret = new ReturnMsg();
 		try {
 			List<Map<String, Object>> userList = dailyDao.queryDaily(param);// 查询日报
-			ret.setData(userList);
-			ret.setCode(100);
-			ret.setMsg("查询用户成功");
-			ret.setCount(dailyDao.countDaily(param));
+			if(userList.size()>0){
+				ret.setData(userList);
+				ret.setCode(100);
+				ret.setMsg("查询日报成功");
+				ret.setCount(dailyDao.countDaily(param));
+			}else if(userList.size()==0){
+				ret.setCode(120);
+				ret.setMsg("无数据");
+			}
 		} catch (Exception e) {
 			log.info("系统异常: ", e);
 			ret.setMsg("查询失败");

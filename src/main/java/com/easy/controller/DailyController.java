@@ -9,20 +9,28 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@EnableTransactionManagement
 @Controller
 @RequestMapping(value = "/daily")
 public class DailyController  extends BaseController {
@@ -92,12 +100,14 @@ public class DailyController  extends BaseController {
                     (Integer.parseInt(param.get("i").toString()) - 1) * limit);//Integer.parseInt(limit))
             map.put("limit", limit);
         ReturnMsg ret = dailyService.queryDaily(map);
-        int count=ret.getCount();
-        if(param.get("i")!=null&&param.get("i")!=""){
-            if(((Integer.parseInt(param.get("i").toString())) * limit)==count){
-                ret.setInfo("last");
+        if(ret.getCode()==100){
+            int count=ret.getCount();
+            if(param.get("i")!=null&&param.get("i")!=""){
+                    if(Integer.parseInt(param.get("i").toString())==(count+limit)/limit){
+                        ret.setInfo("last");
+                    }
             }
-        }
+        };
         return ret;
     }
 
@@ -122,6 +132,7 @@ public class DailyController  extends BaseController {
         return ret;
     }
 
+    @Transactional(value="txManager1")
     @RequestMapping(value = "/exportExcel")
     @RequiresPermissions("/daily/exportExcel")
     @ResponseBody
@@ -152,7 +163,6 @@ public class DailyController  extends BaseController {
         }catch(Exception e){
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -177,7 +187,6 @@ public class DailyController  extends BaseController {
             ret.setCode(200);
             ret.setMsg("删除日报失败");
         }
-
         return ret;
     }
 }

@@ -12,7 +12,14 @@
 
 </head>
 <body>
-<script>$(document).ready(function(c) {
+<script>
+
+	$(document).ready(function(c) {
+        /*if(/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
+            window.location.href = "https://www.baidu.com/";
+        } else {
+            window.location.href = "http://news.baidu.com/";
+        }*/
 	$('.close').on('click', function(c){
 		$('.login-form').fadeOut('slow', function(c){
 	  		$('.login-form').remove();

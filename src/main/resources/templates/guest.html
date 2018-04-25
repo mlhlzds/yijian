@@ -339,6 +339,11 @@
                     }
                     $("#loading").remove();
                     $('.daily').append(html);
+                }else if(code == 120){
+                    $("#loading").remove();
+                    html+='<p class="text-center">无记录</p>';
+                    last="last";
+                    $('.daily').append(html);
                 } else {
                     new $.flavr(msg);
                 }

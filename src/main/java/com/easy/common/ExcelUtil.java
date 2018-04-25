@@ -205,7 +205,6 @@ public class ExcelUtil{
     	if("".equals(fileName)){
 			fileName = "default";
 		}
-		
 		//如果不传 columnNames 列名，通过 list第一行 自动生成              
 		if(columnNames == null){
 			columnNames = new LinkedHashMap<String, String>();
