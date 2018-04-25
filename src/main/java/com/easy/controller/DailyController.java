@@ -9,20 +9,28 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+@EnableTransactionManagement
 @Controller
 @RequestMapping(value = "/daily")
 public class DailyController  extends BaseController {
@@ -61,30 +69,45 @@ public class DailyController  extends BaseController {
      * @param response
      * @return
      */
-    @RequestMapping(value = "/queryDaily", method = RequestMethod.POST)
+    @RequestMapping(value = "/querySuperDaily", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnMsg queryDaily(@RequestBody ModelMap param , HttpServletRequest request, HttpServletResponse response) {
+    public ReturnMsg querySuperDaily(String page, String limit, String username, String date1, String date2,
+                                     HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
-        int limit=0;
-        if(param.get("limit")!=null&&param.get("page")!=null){
-            limit=Integer.parseInt(param.get("limit").toString());
             map.put("pageStart",
-                    (Integer.parseInt(param.get("page").toString()) - 1) * Integer.parseInt(param.get("limit").toString()));//
-            map.put("limit", param.get("limit"));
-            map.put("username",param.get("username"));
-            map.put("date1",param.get("date1"));
-            map.put("date2",param.get("date2"));
-        }else{
-            limit=5;
+                    (Integer.parseInt(page)-1) * Integer.parseInt(limit));
+            map.put("limit", limit);
+            map.put("username", username);
+            map.put("date1", date1);
+            map.put("date2", date2);
+
+        ReturnMsg ret = dailyService.queryDaily(map);
+        return ret;
+    }
+
+    /**
+     *
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/queryNormalDaily", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnMsg queryNormalDaily(@RequestBody ModelMap param , HttpServletRequest request, HttpServletResponse response) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        int limit=5;
             map.put("pageStart",
                     (Integer.parseInt(param.get("i").toString()) - 1) * limit);//Integer.parseInt(limit))
             map.put("limit", limit);
-        }
         ReturnMsg ret = dailyService.queryDaily(map);
-        int count=ret.getCount();
-        if(((Integer.parseInt(param.get("i").toString())) * limit)==count){
-            ret.setInfo("last");
-        }
+        if(ret.getCode()==100){
+            int count=ret.getCount();
+            if(param.get("i")!=null&&param.get("i")!=""){
+                    if(Integer.parseInt(param.get("i").toString())==(count+limit)/limit){
+                        ret.setInfo("last");
+                    }
+            }
+        };
         return ret;
     }
 
@@ -109,6 +132,7 @@ public class DailyController  extends BaseController {
         return ret;
     }
 
+    @Transactional(value="txManager1")
     @RequestMapping(value = "/exportExcel")
     @RequiresPermissions("/daily/exportExcel")
     @ResponseBody
@@ -123,18 +147,22 @@ public class DailyController  extends BaseController {
         map.put("date1", date1);
         map.put("date2", date2);
         map.put("flag","1");
-        ReturnMsg ret = dailyService.queryDaily(map);
+        try{
+            ReturnMsg ret = dailyService.queryDaily(map);
+            dailyService.updateFlag((List<Map<String, Object>>)ret.getData());
 
+            Map<String, String> titles = new LinkedHashMap<String, String>();
+            titles.put("userName", "姓名");
+            titles.put("title", "标题");
+            titles.put("daily", "日报");
+            titles.put("date", "时间");
 
-        Map<String, String> titles = new LinkedHashMap<String, String>();
-        titles.put("userName", "姓名");
-        titles.put("title", "标题");
-        titles.put("daily", "日报");
-        titles.put("date", "时间");
-
-        //titles 表格的列名，可以不手动添加，自动取list第一行数据，生成;
-        //ExcelUtil.expExcel("留言",null,(List)ret.getData(),response);
-        ExcelUtil.expExcel("日报表",titles,(List)ret.getData(),response);
+            //titles 表格的列名，可以不手动添加，自动取list第一行数据，生成;
+            //ExcelUtil.expExcel("留言",null,(List)ret.getData(),response);
+            ExcelUtil.expExcel("日报表",titles,(List)ret.getData(),response);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -159,7 +187,6 @@ public class DailyController  extends BaseController {
             ret.setCode(200);
             ret.setMsg("删除日报失败");
         }
-
         return ret;
     }
 }

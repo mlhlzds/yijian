@@ -38,6 +38,13 @@ public interface DailyService {
 	public ReturnMsg updateDaily(Map<String, Object> map);
 
 	/**
+	 *
+	 * @param list
+	 * @return
+	 */
+	public ReturnMsg updateFlag(List list);
+
+	/**
 	 * 删除日报
 	 * @param param
 	 */
