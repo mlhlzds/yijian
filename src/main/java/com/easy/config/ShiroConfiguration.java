@@ -115,6 +115,7 @@ public class ShiroConfiguration implements TransactionManagementConfigurer {
         shiroFilterFactoryBean.setLoginUrl("/templates/index.html");
         filterChainDefinitionMap.put("/templates/daily/**", "anon");
         filterChainDefinitionMap.put("/templates/login.html", "anon");
+        filterChainDefinitionMap.put("/templates/loginpc.html", "anon");
         filterChainDefinitionMap.put("/user/login", "anon");
         filterChainDefinitionMap.put("/user/**", "authc");
         filterChainDefinitionMap.put("/templates/**", "authc");
