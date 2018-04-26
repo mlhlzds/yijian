@@ -11,14 +11,12 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.apache.shiro.mgt.SecurityManager;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 import org.springframework.web.filter.DelegatingFilterProxy;
-import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -114,8 +112,6 @@ public class ShiroConfiguration implements TransactionManagementConfigurer {
                 .setSecurityManager(getDefaultWebSecurityManager());
         shiroFilterFactoryBean.setLoginUrl("/templates/index.html");
         filterChainDefinitionMap.put("/templates/daily/**", "anon");
-        filterChainDefinitionMap.put("/templates/login.html", "anon");
-        filterChainDefinitionMap.put("/templates/loginpc.html", "anon");
         filterChainDefinitionMap.put("/user/login", "anon");
         filterChainDefinitionMap.put("/user/**", "authc");
         filterChainDefinitionMap.put("/templates/**", "authc");
