@@ -90,18 +90,25 @@
         <form name="addForm">
         <article id="110" class="post">
             <div class="form-group">
-                <label for="date">发送时间</label>
                 <input type="text" id="date" class="form-control" placeholder="yyyy-MM-dd">
+
             </div>
             <div class="form-group">
-                <label for="title">标题</label>
-                <input type="text" class="form-control" id="title" placeholder="title">
+                <input type="text" class="form-control" id="title" placeholder="请输入标题" name="title">
             </div>
             <div class="form-group">
-                <label for="daily">日报</label>
-                <textarea class="form-control" rows="3" id="daily"></textarea>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadio" value="0" checked="checked" id="dayRadio" onclick="dayTime()"> 日报
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="inlineRadio" value="1" id="weekRadio" onclick="weekTime()"> 周报
+            </label>
             </div>
-            <input type="hidden" value="" id="flag">
+            <div class="form-group">
+                <!--<label for="daily">日报</label>-->
+                <textarea class="form-control" rows="3" id="daily" placeholder="请输入日报或周报" name="daily"></textarea>
+            </div>
+            <input type="hidden" value="" id="flag" name="flag">
             <input type="button" class="btn btn-default" onclick="addDaily()" id="addButton" data-toggle="popover" value="提交"/>
             <input type="reset" class="btn btn-default" id="resetButton" value="重置">
         </article>
@@ -157,6 +164,7 @@
 <script>
     $(document).ready(function(e) {
         docInit();
+
     });
     function test(){
         docInit();
@@ -190,6 +198,19 @@
                         $("#date").val(obj.data.date);
                         $("#flag").val(obj.data.did);
                         $("#addButton").val("修改");
+                        if(obj.data.dstatus=='0'){
+                            $('input:radio:first').attr('checked', 'checked');
+                        }else{
+                            $('input:radio:last').attr('checked', 'checked');
+                        }
+                        var date=$('input:radio[id="date"]:checked').val();
+                        var date1=$('input:radio[id="date1"]:checked').val();
+                        if(date==null){
+                            $("#date1").css("display","none");
+                            return false;
+                        }else if(date1==null){
+                            $("#date").css("display","none");
+                        }
                     }
                 }else if(code == 101){
                     $('#title').val("");
@@ -206,6 +227,7 @@
     }
 </script>
 <script>
+
     //执行一个laydate实例
     laydate.render({
         elem: '#date'
@@ -213,6 +235,8 @@
         ,max: 0
         ,theme: '#e67e22'
     });
+
+
 </script>
 <script>
     window._bd_share_config = {
@@ -292,9 +316,9 @@
                     i=i+1;
                     daily(i);
                 }
-            }/*else if(scrollTop<=0){         //滚动条距离顶部的高度小于等于0
+            }else if(scrollTop<=0){         //滚动条距离顶部的高度小于等于0
                 daily(1);
-            }*/
+            }
         })
 
     }
@@ -373,6 +397,11 @@
                         $("#date").val(obj.data.date);
                         $("#flag").val(obj.data.did);
                         $("#addButton").val("修改");
+                        if(obj.data.dstatus=='0'){
+                            $('input:radio:first').attr('checked', 'checked');
+                        }else{
+                            $('input:radio:last').attr('checked', 'checked');
+                        }
                     } else {
                         new $.flavr(msg);
                     }
@@ -384,7 +413,7 @@
     }
     function addDaily() {
         var form=document.forms['addForm'].elements;
-        if(form.date.value=="" || form.daily.value=="") {
+        if(form.date.value=="" || form.inlineRadio.value=="" || form.daily.value=="") {
             new $.flavr("请正确填写");
             return;
         }else{
@@ -399,7 +428,6 @@
                     $('#addButton').removeAttr("disabled");
                     var code = obj.code;
                     var msg = obj.msg;
-                    console.log(code);
                     if (code == 100) {
                         new $.flavr(obj.msg);
                         updateDaily(obj.data.did);
@@ -420,7 +448,7 @@
         for(var i=0; i<fromObj.length; i++){
             var temp = fromObj[i];
             if(temp.type != "button") {
-                data[temp.id] = temp.value;
+                data[temp.name] = temp.value;
             }
         }
         return data;
@@ -463,6 +491,17 @@
                     new $.flavr(obj.msg);
                 }
             });
+    }
+
+    function weekTime() {
+        //
+        // $("#layui-laydate1").
+        laydate.render({
+            elem: '#date'
+        });
+    }
+    function dayTime() {
+
     }
 </script>
 <link rel="stylesheet" type="text/css" href="../static/css/style2.css" />

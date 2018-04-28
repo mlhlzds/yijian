@@ -8,11 +8,11 @@
 			select LAST_INSERT_ID() as did
 		</selectKey>
 		insert into y_daily
-		(d_title, d_daily ,d_date,d_if,u_id) values(#{title}, #{daily} ,#{date},'1',#{uid})
+		(d_title, d_daily ,d_date,d_if,u_id,d_status) values(#{title}, #{daily} ,#{date},'1',#{uid},#{inlineRadio})
 	</insert>
 
 	<select id="queryDaily" parameterType="java.util.Map" resultType="java.util.Map" >
-		select yd.d_id as did, yd.d_daily as daily , yd.d_title as title ,yd.d_date as date ,yd.d_if as dif,yu.u_username as userName from y_daily yd ,y_user yu
+		select yd.d_id as did, yd.d_daily as daily , yd.d_title as title ,yd.d_date as date ,yd.d_if as dif,yu.u_username as userName,yd.d_status as dstatus from y_daily yd ,y_user yu
 		WHERE yd.u_id=yu.u_id
 		<if test="username != null and username != '' ">
 			and yu.u_username like concat('%', '${username}', '%')
@@ -30,7 +30,7 @@
 	</select>
 
 	<select id="querySingleDaily" parameterType="java.util.Map" resultType="java.util.Map" >
-		select yd.d_id as did, yd.d_daily as daily , yd.d_title as title ,yd.d_date as date ,yd.d_if as dif from y_daily yd
+		select yd.d_id as did, yd.d_daily as daily , yd.d_title as title ,yd.d_date as date ,yd.d_if as dif ,yd.d_status as dstatus from y_daily yd
 		WHERE 1=1
 		<if test="did != null and did != '' ">
 			and yd.d_id =#{did}
@@ -59,7 +59,8 @@
 		<set>
 				d_title= #{title},
 				d_daily = #{daily},
-				d_date= #{date}
+				d_date= #{date},
+				d_status= #{inlineRadio}
 		</set>
 		where d_id = #{flag}
 	</update>
