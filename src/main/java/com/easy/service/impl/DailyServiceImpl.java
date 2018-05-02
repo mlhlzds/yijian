@@ -34,7 +34,7 @@ public class DailyServiceImpl implements DailyService{
 			if(i>0){
 				ret.setData(map);
 				ret.setCode(100);
-				ret.setMsg("添加日报成功！");
+				ret.setMsg("添加成功！");
 			}
 		} catch (Exception e) {
 			log.info("系统异常: ", e);

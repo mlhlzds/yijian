@@ -38,6 +38,9 @@
 		<if test="date != null and date != '' ">
 			and yd.d_date =#{date}
 		</if>
+		<if test="inlineRadio != null and inlineRadio != '' ">
+			and yd.d_status =#{inlineRadio}
+		</if>
 	</select>
 
 	<select id="countDaily" parameterType="java.util.Map" resultType="java.lang.Integer" >

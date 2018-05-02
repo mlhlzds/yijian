@@ -54,10 +54,16 @@ public class DailyController  extends BaseController {
         User user = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
         param.put("uid",user.getUid());
         try {
+        ret=dailyService.querySingleDaily(param);
+        if(ret.getCode()!=101){
+            ret.setCode(110);
+            ret.setMsg("日报或周报已发送，请进行修改");
+            return ret;
+        }
             ret=dailyService.addDaily(param);
         } catch (Exception e) {
             ret.setCode(200);
-            ret.setMsg("添加日报失败");
+            ret.setMsg("添加失败");
             return ret;
         }
         return ret;
