@@ -229,12 +229,17 @@
 <script>
 
     //执行一个laydate实例
-    laydate.render({
+    var _date = laydate.render({
         elem: '#date'
         ,min: 0
         ,max: 0
         ,theme: '#e67e22'
     });
+
+    var myDate = new Date;
+    var _year = myDate.getFullYear();//获取当前年
+    var _dateTtime = _date.config.dateTime;
+
 
 
 </script>
@@ -494,14 +499,15 @@
     }
 
     function weekTime() {
-        //
-        // $("#layui-laydate1").
-        laydate.render({
-            elem: '#date'
-        });
+        _date.config.max.year = 2999;
+        _date.config.min.year = 1994;
+
     }
     function dayTime() {
-
+        _date.config.max.year = _year;
+        _date.config.min.year = _year;
+        _date.config.dateTime = _dateTtime;
+        $("#date").val("");
     }
 </script>
 <link rel="stylesheet" type="text/css" href="../static/css/style2.css" />
