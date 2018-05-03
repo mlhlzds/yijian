@@ -19,42 +19,57 @@
     <script type="text/html" id="barDemo">
         <a class="layui-btn layui-btn-danger layui-btn-small" lay-event="del">删除日报</a>
     </script>
+    <script type="text/html" id="dailyTpl">
+        {{#  if(d.dstatus=='000'){ }}
+            {{ '日报' }}
+        {{#  } else { }}
+            {{ '周报' }}
+        {{#  } }}
+    </script>
 </head>
 <body onload="queryDaily()">
 <br />
 <br />
 <div class="layui-form">
+    <form id="form" action="/daily/exportExcel">
     <div class="layui-inline">
-        <label class="layui-form-label">用户姓名</label>
+        <label class="layui-form-label" style="margin-left:-30px">用户姓名</label>
         <div class="layui-input-inline">
             <input type="text" class="layui-input" id="username" name="username">
         </div>
     </div>
 
     <div class="layui-inline">
-        <label class="layui-form-label" style="width:85px">日报起始日期</label>
+        <label class="layui-form-label" style="margin-left:-30px">起始日期</label><!---->
         <div class="layui-input-inline">
             <input type="text" name="date1" id="date1" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
         </div>
     </div>
     <div class="layui-inline">
-        <label class="layui-form-label"  style="width:85px">日报结束日期</label>
+        <label class="layui-form-label" style="margin-left:-30px">结束日期</label>
         <div class="layui-input-inline">
             <input type="text" name="date2" id="date2" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
         </div>
     </div>
-    &nbsp;&nbsp;
+    <div class="layui-input-inline">
+    <select id="dstatus" lay-verify="">
+        <option value="">请选择一个类型</option>
+        <option value="000">日报</option>
+        <option value="001">周报</option>
+    </select>
+    </div>
+    </form>
+
     <div class="layui-inline">
         <div class="layui-input-inline">
-            <button id="button"
-                    class="layui-btn layui-btn-primary layui-btn-radius" onclick="queryDaily()">&nbsp;搜&nbsp;&nbsp;索&nbsp;</button>
+            <button id="button" class="layui-btn layui-btn-primary layui-btn-radius"  onclick="queryDaily()">&nbsp;搜&nbsp;&nbsp;索&nbsp;</button>
         </div>
-        &nbsp;&nbsp;
         <div class="layui-input-inline">
-            <button id="but" class="layui-btn layui-btn-normal layui-btn-radius" onclick="excel()">导出excel</button>
+            <button class="layui-btn layui-btn-normal layui-btn-radius"  onclick="excel()">导出excel</button>
         </div>
     </div>
 </div>
+
 <!--class="layui-tab-item layui-show "-->
 <div  style="margin-left: 30px">
     <table class="layui-hide" id="demo" lay-filter="test"></table>
@@ -62,7 +77,9 @@
 </body>
 <script>
     function excel(){
-        window.location="/daily/exportExcel";
+        //$('#form').attr('target','_blank');
+        //$('#form').attr('action','partExport');
+        $('#form').submit();
     }
 
     layui.use(['form', 'layedit', 'laydate'], function(){

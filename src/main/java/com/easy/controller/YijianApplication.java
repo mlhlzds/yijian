@@ -9,6 +9,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.DelegatingFilterProxy;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @SpringBootApplication
+@EnableTransactionManagement
 @ComponentScan(basePackages = {"com.easy"})
 @MapperScan(value = "com.easy.dao")
 //public class YijianApplication extends SpringBootServletInitializer {

@@ -6,6 +6,7 @@ function queryDaily() {
 		var username = $('#username').val();
 		var date1 = $('#date1').val();
         var date2 = $('#date2').val();
+        var dstatus = $('#dstatus').val();
 
 		// 方法级渲染
 		table.render({
@@ -15,9 +16,10 @@ function queryDaily() {
 			where : {
                 username : username,
 				date1 : date1,
-                date2 : date2
+                date2 : date2,
+                dstatus : dstatus
 			},
-			width : 816,
+			width : 917,
 			cols : [[ // 标题栏
 			{
 				field : 'userName',
@@ -26,18 +28,20 @@ function queryDaily() {
 			}, {
 				field : 'title',
 				title : '标题',
-				width : 150,
-				unresize : true
+				width : 150
+			} ,{
+				field : 'dstatus',
+				title : '类型',
+				width : 100,
+				templet: '#dailyTpl'
 			} , {
 				field : 'daily',
-				title : '日报',
-				width : 300,
-				unresize : true
+				title : '内容',
+				width : 300
 			} , {
 				field : 'date',
 				title : '发送时间',
-				width : 120,
-				unresize : true
+				width : 120
 			},{
 				title : '操作',
 				width : 120,

@@ -94,10 +94,10 @@ public class DailyServiceImpl implements DailyService{
 			int count=dailyDao.updateDaily(map);
 			if(count==1){
 				ret.setCode(120);
-				ret.setMsg("修改日报成功");
+				ret.setMsg("修改成功");
 			}else{
 				ret.setCode(200);
-				ret.setMsg("修改日报失败");
+				ret.setMsg("修改失败");
 			}
 
 		} catch (Exception e) {

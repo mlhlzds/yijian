@@ -23,6 +23,9 @@
 		<if test="date2 != null and date2 != '' ">
 			and yd.d_date &lt;= #{date2}
 		</if>
+		<if test="dstatus != null and dstatus != '' ">
+			and yd.d_status = #{dstatus}
+		</if>
 		group by
 		yd.d_id
 		order by yd.d_id desc,yd.d_date desc

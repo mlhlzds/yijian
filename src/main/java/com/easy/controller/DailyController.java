@@ -77,7 +77,7 @@ public class DailyController  extends BaseController {
      */
     @RequestMapping(value = "/querySuperDaily", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnMsg querySuperDaily(String page, String limit, String username, String date1, String date2,
+    public ReturnMsg querySuperDaily(String page, String limit, String username, String date1, String date2, String dstatus,
                                      HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
             map.put("pageStart",
@@ -86,6 +86,7 @@ public class DailyController  extends BaseController {
             map.put("username", username);
             map.put("date1", date1);
             map.put("date2", date2);
+            map.put("dstatus", dstatus);
 
         ReturnMsg ret = dailyService.queryDaily(map);
         return ret;
@@ -138,11 +139,11 @@ public class DailyController  extends BaseController {
         return ret;
     }
 
-    @Transactional(value="txManager1")
+    @Transactional//(value="txManager1")
     @RequestMapping(value = "/exportExcel")
     @RequiresPermissions("/daily/exportExcel")
     @ResponseBody
-    public void queryMessage2(String username,
+    public ReturnMsg queryMessage2(String username, String dstatus,
                               String date1, String date2, HttpServletRequest request,
                               HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -153,21 +154,29 @@ public class DailyController  extends BaseController {
         map.put("date1", date1);
         map.put("date2", date2);
         map.put("flag","1");
+        map.put("dstatus", dstatus);
+        ReturnMsg ret=null;
         try{
-            ReturnMsg ret = dailyService.queryDaily(map);
+            ret = dailyService.queryDaily(map);
             dailyService.updateFlag((List<Map<String, Object>>)ret.getData());
-
             Map<String, String> titles = new LinkedHashMap<String, String>();
             titles.put("userName", "姓名");
             titles.put("title", "标题");
-            titles.put("daily", "日报");
+            titles.put("daily", "内容");
+            titles.put("dstatus", "类型");
             titles.put("date", "时间");
 
             //titles 表格的列名，可以不手动添加，自动取list第一行数据，生成;
             //ExcelUtil.expExcel("留言",null,(List)ret.getData(),response);
             ExcelUtil.expExcel("日报表",titles,(List)ret.getData(),response);
+            ret.setCode(100);
+            ret.setMsg("导出成功");
         }catch(Exception e){
             e.printStackTrace();
+            ret.setCode(200);
+            ret.setMsg("系统异常");
+        }finally {
+            return ret;
         }
     }
 
@@ -188,10 +197,10 @@ public class DailyController  extends BaseController {
         try {
             dailyService.deleteDaily(map);
             ret.setCode(100);
-            ret.setMsg("删除日报成功");
+            ret.setMsg("删除成功");
         } catch (Exception e) {
             ret.setCode(200);
-            ret.setMsg("删除日报失败");
+            ret.setMsg("删除失败");
         }
         return ret;
     }

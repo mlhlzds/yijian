@@ -126,6 +126,15 @@ public class ExcelUtil{
                     o =  html2Text(jo.get(properties[i])+"");
                 }
 
+                if("dstatus".equals(properties[i])){
+                    o =  html2Text(jo.get(properties[i])+"");
+                    if("000".equals(o)){
+                        o="日报";
+                    }else{
+                        o="周报";
+                    }
+                }
+
                 String cellValue = ""; 
                 if(o==null) cellValue = "";
                 else if(o instanceof Date) cellValue = new SimpleDateFormat(datePattern).format(o);

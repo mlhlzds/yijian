@@ -22,9 +22,10 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 @Configuration
-public class ShiroConfiguration implements TransactionManagementConfigurer {
+public class ShiroConfiguration{
 
     private static Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+    /*implements TransactionManagementConfigurer
     @Resource(name="txManager1")
     private PlatformTransactionManager txManager1;
 
@@ -38,7 +39,7 @@ public class ShiroConfiguration implements TransactionManagementConfigurer {
     @Override
     public PlatformTransactionManager annotationDrivenTransactionManager() {
         return txManager1;
-    }
+    }*/
 
     @Bean
     public FilterRegistrationBean delegatingFilterProxy(){
