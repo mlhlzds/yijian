@@ -103,9 +103,12 @@ public class DailyController  extends BaseController {
     public ReturnMsg queryNormalDaily(@RequestBody ModelMap param , HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> map = new HashMap<String, Object>();
         int limit=5;
-            map.put("pageStart",
-                    (Integer.parseInt(param.get("i").toString()) - 1) * limit);//Integer.parseInt(limit))
-            map.put("limit", limit);
+        map.put("pageStart",(Integer.parseInt(param.get("i").toString()) - 1) * limit);//Integer.parseInt(limit))
+        map.put("limit", limit);
+
+        User user = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+        map.put("uid",user.getUid());
+
         ReturnMsg ret = dailyService.queryDaily(map);
         if(ret.getCode()==100){
             int count=ret.getCount();

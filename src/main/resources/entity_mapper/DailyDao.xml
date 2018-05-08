@@ -26,6 +26,9 @@
 		<if test="dstatus != null and dstatus != '' ">
 			and yd.d_status = #{dstatus}
 		</if>
+		<if test="uid != null and uid != '' ">
+			and yd.u_id = #{uid}
+		</if>
 		group by
 		yd.d_id
 		order by yd.d_id desc,yd.d_date desc
