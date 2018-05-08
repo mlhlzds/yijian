@@ -58,8 +58,12 @@
                             html += '<dl class="layui-nav-child">';
                             var childs = item.menuChild;
                             $.each(childs ,function( i, item){
-                                html += '<dd> <a href="javascript:;" onclick="getMessage(\'' + item.menuUrl +'\', this.text )">'+ item.menuName +'</a></dd>';
-                            });
+                                if(item.menuName == "发送日报"){//target="_blank"
+                                    html += '<dd> <a href="/templates/guest.html"   >'+ item.menuName +'</a></dd>';
+                                }else{
+                                    html += '<dd> <a href="javascript:;" onclick="getMessage(\'' + item.menuUrl +'\', this.text )">'+ item.menuName +'</a></dd>';
+                                }
+                           });
                             html += '</dl></li>';
                         });
                         $('#menu').html(html);
