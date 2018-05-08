@@ -49,6 +49,7 @@ public class DailyServiceImpl implements DailyService{
 
 		ReturnMsg ret = new ReturnMsg();
 		try {
+
 			List<Map<String, Object>> userList = dailyDao.queryDaily(param);// 查询日报
 			if(userList.size()>0){
 				ret.setData(userList);
@@ -115,11 +116,11 @@ public class DailyServiceImpl implements DailyService{
 		try {
 			dailyDao.updateFlag(list);
 			ret.setCode(100);
-			ret.setMsg("修改这状态成功");
+			ret.setMsg("日报接收成功");
 		} catch (Exception e) {
 			log.info("系统异常: ", e);
 			ret.setCode(999);
-			ret.setMsg("系统异常，修改失败");
+			ret.setMsg("系统异常");
 		}
 
 		return ret;

@@ -65,6 +65,9 @@
             <button id="button" class="layui-btn layui-btn-primary layui-btn-radius"  onclick="queryDaily()">&nbsp;搜&nbsp;&nbsp;索&nbsp;</button>
         </div>
         <div class="layui-input-inline">
+            <button class="layui-btn layui-btn-radius" lay-submit lay-filter="finish">完成日报</button>
+        </div>
+        <div class="layui-input-inline">
             <button class="layui-btn layui-btn-normal layui-btn-radius"  onclick="excel()">导出excel</button>
         </div>
     </div>
@@ -97,6 +100,29 @@
             elem: '#date2'
             //,value: new Date()
             ,theme: 'grid',
+        });
+
+        //监听提交
+        form.on('submit(finish)', function(data){
+            $.ajax({
+                type:"POST",
+                url:'/daily/updateFalg',
+                dataType:"json",
+                contentType:"application/json",
+                data:JSON.stringify(data.field),
+                success:function (obj) {
+                    var code = obj.code;
+                    var msg = obj.msg;
+                    if (code == 100) {
+                        layer.msg(obj.msg);
+                    } else {
+                        layer.msg(obj.msg);
+                    }
+                },error:function (obj) {
+                    layer.msg(obj.msg);
+                }
+            })
+            return false;
         });
     });
 </script>

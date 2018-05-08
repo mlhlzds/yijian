@@ -133,9 +133,32 @@ public class DailyController  extends BaseController {
 
     @RequestMapping(value = "/updateDaily", method = RequestMethod.POST)
     @ResponseBody
-    public ReturnMsg updateRole(@RequestBody ModelMap map,
+    public ReturnMsg updateDaily(@RequestBody ModelMap map,
                                 HttpServletRequest request, HttpServletResponse response) {
         ReturnMsg ret = dailyService.updateDaily(map);
+        return ret;
+    }
+
+    @RequestMapping(value = "/updateFalg", method = RequestMethod.POST)
+    @ResponseBody
+    public ReturnMsg updateFalg(@RequestBody ModelMap map,
+                                HttpServletRequest request, HttpServletResponse response) {
+        ReturnMsg ret =null;
+        map.put("pageStart",Integer.valueOf("0"));
+        map.put("limit", Integer.valueOf("9999999"));
+        try{
+            ret = dailyService.queryDaily(map);
+            if (ret.getCode()==120) {
+                ret.setCode(110);
+                ret.setMsg("无数据");
+                return ret;
+            }
+            ret=dailyService.updateFlag((List<Map<String, Object>>)ret.getData());
+        }catch(Exception e){
+            e.printStackTrace();
+            ret.setCode(200);
+            ret.setMsg("系统异常");
+        }
         return ret;
     }
 
@@ -158,7 +181,7 @@ public class DailyController  extends BaseController {
         ReturnMsg ret=null;
         try{
             ret = dailyService.queryDaily(map);
-            dailyService.updateFlag((List<Map<String, Object>>)ret.getData());
+
             Map<String, String> titles = new LinkedHashMap<String, String>();
             titles.put("userName", "姓名");
             titles.put("title", "标题");
