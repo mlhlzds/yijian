@@ -138,7 +138,20 @@ public class DailyController  extends BaseController {
     @ResponseBody
     public ReturnMsg updateDaily(@RequestBody ModelMap map,
                                 HttpServletRequest request, HttpServletResponse response) {
-        ReturnMsg ret = dailyService.updateDaily(map);
+        ReturnMsg ret = new ReturnMsg();
+        try {
+            User user = (User) SecurityUtils.getSubject().getSession().getAttribute("user");
+            map.put("uid",user.getUid());
+            dailyService.deleteDaily(map);
+            ret = dailyService.addDaily(map);
+            ret.setCode(100);
+            ret.setMsg("修改成功！");
+        } catch (Exception e) {
+            ret.setCode(200);
+            ret.setMsg("修改失败");
+            return ret;
+        }
+
         return ret;
     }
 

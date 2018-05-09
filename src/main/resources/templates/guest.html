@@ -166,6 +166,7 @@
 
     });
     function test(){
+        window.location.reload();
         docInit();
     }
 
@@ -328,11 +329,16 @@
                         } else {
                             html += item.title;
                         }
+                        if (item.dstatus == '000'){
+                            item.dstatus = '日报';
+                        } else {
+                            item.dstatus = '周报';
+                        }
                         var str = item.daily.replaceAll("\n", "<br />");
                         str = str.replaceAll("\r", "<br />");
 
-                        html += '</h1><div class="post-meta"><span class="author">作者：<span style="color: darkorange">' + item.userName + '</span></span> •';
-                        html += '<time class="post-date">' + item.date + '</time></div></div><div class="post-content"><p>' + str + '</p></div>';
+                        html += '</h1><div class="post-meta"><span class="author">作者：<span style="color: darkorange">' + item.userName + '</span></span>·';
+                        html += '<time class="post-date">' + item.date + '</time>·<span style="color: darkorange">' + item.dstatus + '</span></div></div><div class="post-content"><p>' + str + '</p></div>';
                         if (item.dif == '1') {
                             html += '<div class="post-permalink"><a href="#addDaily" aria-controls="addDaily" role="tab" data-toggle="tab" class="btn btn-default" onclick="selectUdaily(' + item.did + ')">修改日报</a>'
                         }
@@ -351,7 +357,7 @@
                     last="last";
                     $('.daily').append(html);
                 } else {
-                    alert(msg);
+                    layer.msg(msg);
                 }
 
             },
@@ -381,13 +387,13 @@
                         $("#date").val(obj.data.date);
                         $("#flag").val(obj.data.did);
                         $("#addButton").val("修改");
-                        if(obj.data.dstatus=='0'){
+                        if(obj.data.dstatus=='000'){
                             $('input:radio:first').attr('checked', 'checked');
                         }else{
                             $('input:radio:last').attr('checked', 'checked');
                         }
                     } else {
-                        alert(msg);
+                        layer.msg(msg);
                     }
                 },
                 error: function (obj) {
@@ -398,7 +404,7 @@
     function addDaily() {
         var form=document.forms['addForm'].elements;
         if(form.date.value=="" || form.inlineRadio.value=="" || form.daily.value=="") {
-            alert("请正确填写");
+            layer.msg("请正确填写");
             return;
         }else{
             $("#addButton").attr("disabled","true");
@@ -413,14 +419,14 @@
                     var code = obj.code;
                     var msg = obj.msg;
                     if (code == 100) {
-                        alert(obj.msg);
+                        layer.msg(msg);
                     } else {
-                        alert(obj.msg);
+                        layer.msg(msg);
                     }
                 },
                 error : function(obj) {
                     $('#addButton').removeAttr("disabled");
-                    alert(obj.msg);
+                    layer.msg(msg);
                 }
             });
         }
@@ -442,13 +448,13 @@
     function updatePassword() {
         var form=document.forms['passwordForm'].elements;
         if(form.oldPassword.value=="" || form.newPassword.value==""|| form.newPassword1.value=="") {
-            alert("请正确填写");
+            layer.msg("请正确填写");
             return;
         }else if(form.oldPassword.value==form.newPassword.value){
-            alert("新密码与旧密码不能相同");
+            layer.msg("新密码与旧密码不能相同");
             return;
         }else if(form.newPassword.value!=form.newPassword1.value){
-            alert("新密码与确认密码不相同");
+            layer.msg("新密码与确认密码不相同");
             return;
         }else
             $("#updateButton").attr("disabled","true");
@@ -466,14 +472,14 @@
                         $("#oldPassword").val("");
                         $("#newPassword").val("");
                         $("#newPassword1").val("");
-                        alert(obj.msg);
+                        layer.msg(obj.msg);
                     } else {
-                        alert(obj.msg);
+                        layer.msg(obj.msg);
                     }
                 },
                 error : function(obj) {
                     $('#updateButton').removeAttr("disabled");
-                    alert(obj.msg);
+                    layer.msg(obj.msg);
                 }
             });
     }

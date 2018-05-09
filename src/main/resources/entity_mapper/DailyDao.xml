@@ -86,7 +86,18 @@
 	</update>
 
 	<delete id="deleteDaily" parameterType="java.util.Map">
-		delete from y_daily where d_id = #{did}
+		delete from y_daily
+		where 1=1
+		<if test="did != null and did != '' ">
+			and d_id = #{did}
+		</if>
+		<if test="date != null and date != '' ">
+			and d_date =#{date}
+		</if>
+		<if test="inlineRadio != null and inlineRadio != '' ">
+			and d_status =#{inlineRadio}
+		</if>
+
 	</delete>
 
 </mapper>
